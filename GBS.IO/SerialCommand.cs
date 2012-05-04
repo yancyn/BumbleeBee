@@ -7,11 +7,13 @@ namespace GBS.IO
 {
     public partial class SerialCommand
     {
+        #region Properties
         private bool hasChanged;
         /// <summary>
         /// Determine whether this parameter command has been modified since load from setting.
         /// </summary>
         public bool HasChanged { get { return this.hasChanged; } }
+        #endregion
 
         #region Constructors
         public SerialCommand()
@@ -23,6 +25,14 @@ namespace GBS.IO
             Initialize();
 
             this.nameField = name;
+            this.parameterTypeField = type;
+        }
+        public SerialCommand(string name, Object value, ParameterType type)
+        {
+            Initialize();
+
+            this.nameField = name;
+            this.parameterValueField = value;
             this.parameterTypeField = type;
         }
         public SerialCommand(string name, Object value)
@@ -61,8 +71,10 @@ namespace GBS.IO
 
         #endregion
 
+        #region Methods
         private void Initialize()
         {
+            this.parameterTypeField = ParameterType.Integer;
             this.maxValueField = new Object();
             this.minValueField = new Object();
             this.parameterOptionsField = new List<KeyValuePair<int, string>>();
@@ -84,5 +96,6 @@ namespace GBS.IO
         {
             this.successField = true;
         }
+        #endregion
     }
 }

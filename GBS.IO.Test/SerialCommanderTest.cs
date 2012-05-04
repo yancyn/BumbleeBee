@@ -68,23 +68,23 @@ namespace GBS.IO.Test
             SerialCommander target = new SerialCommander("BumbleBee");
 
             ParameterGroup group = new ParameterGroup("Initialization LED");
-            group.Commands.Add(new SerialCommand("LED Blinking On Period", 1000, 65535, "ms"));
-            group.Commands.Add(new SerialCommand("LED Blinking Off Period", 2000, 65535, "ms"));
-            group.Commands.Add(new SerialCommand("# of LED Blinking", 23, 255));
-            group.Commands.Add(new SerialCommand("Fail LED On Period", 23050, 65535, "sec"));
+            group.Commands.Add(new SerialCommand("LED Blinking On Period", 100, 65535, "ms"));
+            group.Commands.Add(new SerialCommand("LED Blinking Off Period", 100, 65535, "ms"));
+            group.Commands.Add(new SerialCommand("Number of LED Blinking", 10, 255));
+            group.Commands.Add(new SerialCommand("Fail LED On Period", 20, 65535, "sec"));
 
             ParameterGroup group2 = new ParameterGroup();
             group2.Commands.Add(new SerialCommand("Startup Delay", 10, 65535, "sec"));
-            group2.Commands.Add(new SerialCommand("Temperature Sampling Period", 4579, 65535, "sec"));
+            group2.Commands.Add(new SerialCommand("Temperature Sampling Period", 10, 65535, "sec"));
 
             ParameterGroup group3 = new ParameterGroup();
-            group3.Commands.Add(new SerialCommand("Normal Reporting Period", 13, 65535, "sec"));
+            group3.Commands.Add(new SerialCommand("Normal Reporting Period", 10, 65535, "sec"));
             group3.Commands.Add(new SerialCommand("Violation Reporting Period", 5, 65535, "sec"));
-            group3.Commands.Add(new SerialCommand("Tag ID", "0x12345678"));
-            group3.Commands.Add(new SerialCommand("Group ID", "0x9999"));
+            group3.Commands.Add(new SerialCommand("Tag ID", 305419896, ParameterType.Hex));
+            group3.Commands.Add(new SerialCommand("Group ID", 39321, ParameterType.Hex));
 
             ParameterGroup group4 = new ParameterGroup("RF");
-            group4.Commands.Add(new SerialCommand("Maximum of RF Retries", 13, 255));
+            group4.Commands.Add(new SerialCommand("Maximum of RF Retries", 3, 255));
             group4.Commands.Add(new SerialCommand("RF Retry Delay", 500, 655353, "ms"));
             group4.Commands.Add(new SerialCommand("RF Maximum Wait ACK Period", 60, 255, "ms"));
 
@@ -374,6 +374,33 @@ namespace GBS.IO.Test
                 actual = (match.Groups[0].Value.Equals(target));
             else
                 actual = false;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void IntToHexTest()
+        {
+            int target = 15;
+            string expected = "0x000f";
+            string actual = String.Format("0x{0:x4}", target);//"0x{0:x8}"
+            Assert.AreEqual(expected, actual);
+        }
+        [TestMethod()]
+        public void HexToIntTest()
+        {
+            string target = "0x00ff";
+            int expected = 255;
+            int actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+            target = "0x9999";
+            expected = 39321;
+            actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+            target = "0x12345678";
+            expected = 305419896;
+            actual = Convert.ToInt32(target.ToLower(), 16);
             Assert.AreEqual(expected, actual);
         }
     }
