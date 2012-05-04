@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataModel"
+    targetNamespace="http://tempuri.org/DataModel.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/DataModel.xsd"
+    xmlns:mstns="http://tempuri.org/DataModel.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:simpleType name="ParameterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Integer"/>
+      <xs:enumeration value="Hex"/>
+      <xs:enumeration value="String"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="SerialCommand">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="IsInquired" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>
+            Indicates this command is being inquire to com port.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Success" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>
+            Indicates success or failure.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      
+      <xs:element name="GroupId" type="xs:string"/>
+      <xs:element name="ParameterId" type="xs:string"/>
+      <xs:element name="ParameterValue" type="Object"/>
+      <xs:element name="Unit" type="xs:string"/>
+      <xs:element name="ParameterType" type="ParameterType">
+        <xs:annotation>
+          <xs:documentation>
+            To determine what control to be load for ParameterValue input.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MinValue" type="Object"/>
+      <xs:element name="MaxValue" type="Object"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ParameterGroup">
+    <xs:sequence>
+      <xs:element name="Header" type="xs:string"/>
+      <xs:sequence>
+        <xs:element name="Commands" type="SerialCommand" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="SerialCommander">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Firmware" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Firmware version.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Codeplug" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Codeplug version.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Message" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Show status update for commander.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Output" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>
+            Debug output after start listening to serial port.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:sequence>
+        <xs:element name="CommandGroups" type="ParameterGroup" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Object"/>
+
+  <xs:element name="SerialCommand" type="SerialCommand"/>
+  <xs:element name="ParameterGroup" type="ParameterGroup"/>
+  <xs:element name="SerialCommander" type="SerialCommander"/>
+  <xs:element name="Object" type="Object"/>
+</xs:schema>

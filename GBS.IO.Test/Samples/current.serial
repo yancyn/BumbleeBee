@@ -1,0 +1,285 @@
+<?xml version="1.0"?>
+<SerialCommander xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>BumbleBee</Name>
+  <CommandGroups>
+    <ParameterGroup>
+      <Header>Initialization LED</Header>
+      <Commands>
+        <SerialCommand>
+          <Name>LED Blinking On Period</Name>
+          <GroupId>00</GroupId>
+          <ParameterId>00</ParameterId>
+          <ParameterValue xsi:type="xsd:string">1503</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>LED Blinking Off Period</Name>
+          <GroupId>00</GroupId>
+          <ParameterId>01</ParameterId>
+          <ParameterValue xsi:type="xsd:int">2000</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Number of LED Blinking</Name>
+          <GroupId>00</GroupId>
+          <ParameterId>02</ParameterId>
+          <ParameterValue xsi:type="xsd:int">23</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Fail LED On Period</Name>
+          <GroupId>00</GroupId>
+          <ParameterId>03</ParameterId>
+          <ParameterValue xsi:type="xsd:int">23050</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+      </Commands>
+    </ParameterGroup>
+    <ParameterGroup>
+      <Commands>
+        <SerialCommand>
+          <Name>Startup Delay</Name>
+          <GroupId>01</GroupId>
+          <ParameterId>00</ParameterId>
+          <ParameterValue xsi:type="xsd:int">10</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Temperature Sampling Period</Name>
+          <GroupId>01</GroupId>
+          <ParameterId>01</ParameterId>
+          <ParameterValue xsi:type="xsd:int">4579</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+      </Commands>
+    </ParameterGroup>
+    <ParameterGroup>
+      <Commands>
+        <SerialCommand>
+          <Name>Normal Reporting Period</Name>
+          <GroupId>02</GroupId>
+          <ParameterId>00</ParameterId>
+          <ParameterValue xsi:type="xsd:int">13</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Violation Reporting Period</Name>
+          <GroupId>02</GroupId>
+          <ParameterId>01</ParameterId>
+          <ParameterValue xsi:type="xsd:int">5</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">65535</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Tag ID</Name>
+          <GroupId>02</GroupId>
+          <ParameterId>02</ParameterId>
+          <ParameterValue xsi:type="xsd:string">0x12345678</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>String</ParameterType>
+          <MinValue />
+          <MaxValue />
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Group ID</Name>
+          <GroupId>02</GroupId>
+          <ParameterId>03</ParameterId>
+          <ParameterValue xsi:type="xsd:string">0x9999</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>String</ParameterType>
+          <MinValue />
+          <MaxValue />
+        </SerialCommand>
+      </Commands>
+    </ParameterGroup>
+    <ParameterGroup>
+      <Header>RF</Header>
+      <Commands>
+        <SerialCommand>
+          <Name>Maximum of RF Retries</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>00</ParameterId>
+          <ParameterValue xsi:type="xsd:string">18</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF Retry Delay</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>01</ParameterId>
+          <ParameterValue xsi:type="xsd:int">500</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">655353</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF Maximum Wait ACK Period</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>02</ParameterId>
+          <ParameterValue xsi:type="xsd:int">60</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF TX Output Power</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>03</ParameterId>
+          <ParameterValue xsi:type="KeyValuePairOfInt32String">
+            <Key>6</Key>
+            <Value>+7 dBm</Value>
+          </ParameterValue>
+          <ParameterOptions>
+            <KeyValuePairOfInt32String>
+              <Key>0</Key>
+              <Value>-30 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>1</Key>
+              <Value>-20 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>2</Key>
+              <Value>-15 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>3</Key>
+              <Value>-10 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>4</Key>
+              <Value>0 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>5</Key>
+              <Value>+5 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>6</Key>
+              <Value>+7 dBm</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>7</Key>
+              <Value>+10 dBm</Value>
+            </KeyValuePairOfInt32String>
+          </ParameterOptions>
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue />
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF TX/RX LED Blinking On Period</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>04</ParameterId>
+          <ParameterValue xsi:type="xsd:int">50</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">655353</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF TX/RX LED Blinking Off Period</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>05</ParameterId>
+          <ParameterValue xsi:type="xsd:int">50</ParameterValue>
+          <Unit>ms</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">655353</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF TX/RX Number of LED Blinking</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>06</ParameterId>
+          <ParameterValue xsi:type="xsd:int">2</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>RF Device Address</Name>
+          <GroupId>03</GroupId>
+          <ParameterId>07</ParameterId>
+          <ParameterValue xsi:type="xsd:int">136</ParameterValue>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+      </Commands>
+    </ParameterGroup>
+    <ParameterGroup>
+      <Commands>
+        <SerialCommand>
+          <Name>Maximum Wait Period To Process PC Command</Name>
+          <GroupId>04</GroupId>
+          <ParameterId>00</ParameterId>
+          <ParameterValue xsi:type="xsd:int">15</ParameterValue>
+          <Unit>sec</Unit>
+          <ParameterOptions />
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue xsi:type="xsd:int">255</MaxValue>
+        </SerialCommand>
+        <SerialCommand>
+          <Name>Power Saving Mode</Name>
+          <GroupId>04</GroupId>
+          <ParameterId>01</ParameterId>
+          <ParameterValue xsi:type="xsd:int">0</ParameterValue>
+          <ParameterOptions>
+            <KeyValuePairOfInt32String>
+              <Key>0</Key>
+              <Value>DISABLE</Value>
+            </KeyValuePairOfInt32String>
+            <KeyValuePairOfInt32String>
+              <Key>1</Key>
+              <Value>ENABLE</Value>
+            </KeyValuePairOfInt32String>
+          </ParameterOptions>
+          <ParameterType>Integer</ParameterType>
+          <MinValue />
+          <MaxValue />
+        </SerialCommand>
+      </Commands>
+    </ParameterGroup>
+  </CommandGroups>
+</SerialCommander>

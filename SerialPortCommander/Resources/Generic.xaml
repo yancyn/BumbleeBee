@@ -1,0 +1,114 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    x:Class="SerialPortCommander.Generic"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:io="clr-namespace:System.IO.Ports;assembly=System"
+                    xmlns:s="clr-namespace:SerialPortCommander"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <ObjectDataProvider x:Key="ParityEnums" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:TypeExtension TypeName="io:Parity"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+    <ObjectDataProvider x:Key="StopBitsEnums" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+        <ObjectDataProvider.MethodParameters>
+            <x:TypeExtension TypeName="io:StopBits"/>
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="Width" Value="60"/>
+    </Style>
+    <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Width="Auto">
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="UpButton" BasedOn="{StaticResource BorderlessButton}" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Path Fill="Blue" Data="M 0 6 L 12 6 L 6 0 Z"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style x:Key="DownButton" BasedOn="{StaticResource BorderlessButton}" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Path Fill="Blue" Data="M 0 0 L 6 6 L 12 0 Z"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+    <Style x:Key="TwoComboBox" BasedOn="{StaticResource {x:Type RadioButton}}" TargetType="{x:Type ComboBox}">
+
+    </Style>
+
+    <s:BooleanConverter x:Key="BooleanConverter"/>
+
+    <s:LayoutSelector x:Key="LayoutSelector"/>
+    <DataTemplate x:Key="TextTemplate">
+        <WrapPanel>
+            <TextBlock Text="{Binding Path=Name}"/>
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
+        </WrapPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="IntegerTemplate">
+        <WrapPanel>
+            <TextBlock Text="{Binding Path=Name}"/>
+            <!--<s:NumericUpDown Width="100" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}"
+                             Value="{Binding Path=ParameterValue,UpdateSourceTrigger=PropertyChanged}"/>-->
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
+        </WrapPanel>
+    </DataTemplate>
+    <!--<DataTemplate x:Key="RadioTemplate">
+        <WrapPanel>
+            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}"/>
+            <ComboBox Style="{StaticResource TwoComboBox}" ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
+                      SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
+        </WrapPanel>
+    </DataTemplate>-->
+    <DataTemplate x:Key="OptionsTemplate">
+        <WrapPanel>
+            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}"/>
+            <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
+                      SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
+        </WrapPanel>
+    </DataTemplate>
+
+    <s:RadioSelector x:Key="RadioSelector"/>
+    <DataTemplate x:Key="RadioTemplate">
+        <WrapPanel>
+            <TextBlock Text="{Binding Path=Name}"/>
+            <ListView ItemsSource="{Binding Path=ParameterOptions}" ItemTemplateSelector="{StaticResource RadioSelector}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
+        </WrapPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="PositiveRadioTemplate">
+        <RadioButton Content="{Binding Value}" GroupName="{Binding Key}"
+            IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
+            Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=1,
+            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Checked="RadioButton_Checked"/>
+    </DataTemplate>
+    <DataTemplate x:Key="NegativeRadioTemplate">
+        <RadioButton Content="{Binding Value}" GroupName="{Binding Key}"
+            IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
+            Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=0,
+            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Checked="RadioButton_Checked"/>
+    </DataTemplate>
+</ResourceDictionary>
