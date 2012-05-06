@@ -61,7 +61,7 @@
     <DataTemplate x:Key="TextTemplate">
         <WrapPanel>
             <TextBlock Text="{Binding Path=Name}"/>
-            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=LostFocus,ValidatesOnDataErrors=True}"/>
             <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
@@ -70,7 +70,7 @@
             <TextBlock Text="{Binding Path=Name}"/>
             <!--<s:NumericUpDown Width="100" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}"
                              Value="{Binding Path=ParameterValue,UpdateSourceTrigger=PropertyChanged}"/>-->
-            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=LostFocus,ValidatesOnDataErrors=True}"/>
             <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>

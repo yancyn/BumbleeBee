@@ -388,13 +388,23 @@ namespace GBS.IO
                     cmd.MinValue = command.MinValue;
                     cmd.MaxValue = command.MaxValue;
                     cmd.Unit = command.Unit;
+
+                    //set default parametervalue and corrected minValue after deserialized
                     switch (cmd.ParameterType)
                     {
                         case ParameterType.Integer:
                             cmd.ParameterValue = 0;
+                            if (cmd.MinValue.GetType() != typeof(int))
+                                cmd.MinValue = 0;
+                            if (cmd.MinValue.GetType() != typeof(Int32))
+                                cmd.MinValue = 0;
                             break;
                         case ParameterType.String:
                             cmd.ParameterValue = string.Empty;
+                            if (cmd.MinValue.GetType() != typeof(string))
+                                cmd.MinValue = string.Empty;
+                            if (cmd.MinValue.GetType() != typeof(String))
+                                cmd.MinValue = string.Empty;
                             break;
                     }
 
