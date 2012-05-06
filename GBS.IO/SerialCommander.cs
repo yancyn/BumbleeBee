@@ -5,11 +5,12 @@ using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.IO;
 using System.Windows.Input;
 
 namespace GBS.IO
 {
-    public partial class SerialCommander : IDisposable, IDataErrorInfo
+    public partial class SerialCommander : IDisposable
     {
         #region Fields
         /// <summary>
@@ -304,8 +305,11 @@ namespace GBS.IO
         public void LoadSetting()
         {
             SetMessage("Load setting...");
-            SerialCommander commander = LoadFromFile(DEFAULT_FILENAME);
-            Clone(commander);
+            if (File.Exists(DEFAULT_FILENAME))
+            {
+                SerialCommander commander = LoadFromFile(DEFAULT_FILENAME);
+                Clone(commander);
+            }
             //commander.Dispose();
         }
         /// <summary>
@@ -445,18 +449,6 @@ namespace GBS.IO
         {
             for (int i = 0; i < 3; i++)
                 Read((SerialCommand)command);
-        }
-        #endregion
-
-        #region IDataErrorInfo Members
-        //TODO: IDataErrorInfo
-        public string Error
-        {
-            get { throw new NotImplementedException(); }
-        }
-        public string this[string columnName]
-        {
-            get { throw new NotImplementedException(); }
         }
         #endregion
     }
