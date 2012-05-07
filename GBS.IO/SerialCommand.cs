@@ -98,6 +98,8 @@ namespace GBS.IO
                     this.maxValueField = 0;
                     break;
                 case IO.ParameterType.Hex:
+                    this.minValueField = 0x0000;
+                    this.maxValueField = 0xFFFF;
                     break;
             }
         }
@@ -111,6 +113,7 @@ namespace GBS.IO
                 this.minValueField = 0.0d;
             else if (maxValueField.GetType() == typeof(string))
                 this.minValueField = string.Empty;
+            //todo: initial minValue for hex type
         }
         /// <summary>
         /// Return to original state when first load the value.
@@ -140,32 +143,28 @@ namespace GBS.IO
             get
             {
                 string error = string.Empty;
-                switch (columnName)
+                if (this.hasChanged)
                 {
-                    case "ParameterValue":
-                        switch (this.parameterTypeField)
-                        {
-                            case ParameterType.String:
-                                break;
-                            case ParameterType.Integer:
-                                if (minValueField != null && maxValueField != null && parameterValueField != null)
-                                {
+                    switch (columnName)
+                    {
+                        case "ParameterValue":
+                            switch (this.parameterTypeField)
+                            {
+                                case ParameterType.String:
+                                    break;
+                                case ParameterType.Integer:
                                     Int32 min = (Int32)this.minValueField;
                                     Int32 max = (Int32)this.maxValueField;
                                     Int32 value = 0;
                                     Int32.TryParse(parameterValueField.ToString(), out value);
-                                    if (value == 0)
-                                        error = "Value must be an integer.";
-                                    else if (value < min || value > max)
-                                    {
+                                    if (value == 0 || value < min || value > max)
                                         error = string.Format("Value must between {0} and {1}.", min, max);
-                                    }
-                                }
-                                break;
-                            case ParameterType.Hex:
-                                break;
-                        }
-                        break;
+                                    break;
+                                case ParameterType.Hex:
+                                    break;
+                            }
+                            break;
+                    }
                 }
 
                 return error;

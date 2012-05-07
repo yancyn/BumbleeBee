@@ -394,17 +394,21 @@ namespace GBS.IO
                     {
                         case ParameterType.Integer:
                             cmd.ParameterValue = 0;
-                            if (cmd.MinValue.GetType() != typeof(int))
-                                cmd.MinValue = 0;
-                            if (cmd.MinValue.GetType() != typeof(Int32))
-                                cmd.MinValue = 0;
+                            //if (cmd.MinValue.GetType() != typeof(int))
+                            //    cmd.MinValue = 0;
+                            //if (cmd.MinValue.GetType() != typeof(Int32))
+                            //    cmd.MinValue = 0;
                             break;
                         case ParameterType.String:
                             cmd.ParameterValue = string.Empty;
-                            if (cmd.MinValue.GetType() != typeof(string))
-                                cmd.MinValue = string.Empty;
-                            if (cmd.MinValue.GetType() != typeof(String))
-                                cmd.MinValue = string.Empty;
+                            //if (cmd.MinValue.GetType() != typeof(string))
+                            //    cmd.MinValue = string.Empty;
+                            //if (cmd.MinValue.GetType() != typeof(String))
+                            //    cmd.MinValue = string.Empty;
+                            break;
+                        case ParameterType.Hex:
+                            //TODO: default hex value
+                            cmd.ParameterValue = 0x0000;
                             break;
                     }
 

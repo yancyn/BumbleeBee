@@ -54,6 +54,26 @@
     <Style x:Key="TwoComboBox" BasedOn="{StaticResource {x:Type RadioButton}}" TargetType="{x:Type ComboBox}">
 
     </Style>
+    <Style x:Key="RedToolTip" TargetType="{x:Type TextBox}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,2,40,2" />
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <DockPanel LastChildFill="true">
+                        <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
+                            ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                            <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white"/>
+                        </Border>
+                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                            <Border BorderBrush="red" BorderThickness="1" />
+                        </AdornedElementPlaceholder>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
     <s:BooleanConverter x:Key="BooleanConverter"/>
 
@@ -61,7 +81,8 @@
     <DataTemplate x:Key="TextTemplate">
         <WrapPanel>
             <TextBlock Text="{Binding Path=Name}"/>
-            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=LostFocus,ValidatesOnDataErrors=True}"/>
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
             <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
@@ -70,7 +91,8 @@
             <TextBlock Text="{Binding Path=Name}"/>
             <!--<s:NumericUpDown Width="100" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}"
                              Value="{Binding Path=ParameterValue,UpdateSourceTrigger=PropertyChanged}"/>-->
-            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=LostFocus,ValidatesOnDataErrors=True}"/>
+            <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
             <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
