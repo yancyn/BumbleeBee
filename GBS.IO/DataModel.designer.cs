@@ -23,7 +23,7 @@ namespace GBS.IO
 
         private string nameField;
 
-        private bool isInquiredField;
+        private bool enquiringField;
 
         private bool successField;
 
@@ -69,7 +69,7 @@ namespace GBS.IO
             }
         }
 
-        public bool IsInquired { get { return this.isInquiredField; } }
+        public bool Enquiring { get { return this.enquiringField; } }
 
         public bool Success { get { return this.successField; } }
 

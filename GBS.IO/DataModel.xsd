@@ -17,7 +17,7 @@
   <xs:complexType name="SerialCommand">
     <xs:sequence>
       <xs:element name="Name" type="xs:string"/>
-      <xs:element name="IsInquired" type="xs:boolean">
+      <xs:element name="Enquiring" type="xs:boolean">
         <xs:annotation>
           <xs:documentation>
             Indicates this command is being inquire to com port.
