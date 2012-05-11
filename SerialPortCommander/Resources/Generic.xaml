@@ -25,7 +25,7 @@
     
     <!-- For unit label use after input-->
     <Style x:Key="Suffix" TargetType="{x:Type TextBlock}">
-        <Setter Property="Width" Value="40"/>
+        <Setter Property="Width" Value="20"/>
         <Setter Property="TextAlignment" Value="Left"/>
     </Style>
     
@@ -89,6 +89,7 @@
 
 
     <s:BooleanConverter x:Key="BooleanConverter"/>
+    <s:BackgroundConverter x:Key="BackgroundConverter"/>
 
     <s:LayoutSelector x:Key="LayoutSelector"/>
     <DataTemplate x:Key="TextTemplate">
@@ -96,8 +97,15 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
                      Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                     Width="80" TextAlignment="Right"/>
-            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
+                     Width="80" TextAlignment="Right">
+                <TextBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBox.Background>
+            </TextBox>
+            <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
     <DataTemplate x:Key="IntegerTemplate">
@@ -107,8 +115,15 @@
                              Value="{Binding Path=ParameterValue,UpdateSourceTrigger=PropertyChanged}"/>-->
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
                      Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                     Width="80" TextAlignment="Right"/>
-            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
+                     Width="80" TextAlignment="Right">
+                <TextBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBox.Background>
+            </TextBox>
+            <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
     <!--<DataTemplate x:Key="RadioTemplate">
@@ -124,7 +139,7 @@
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
             <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
                       SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
 
@@ -133,7 +148,7 @@
         <WrapPanel>
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <ListView ItemsSource="{Binding Path=ParameterOptions}" ItemTemplateSelector="{StaticResource RadioSelector}"/>
-            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
+            <TextBlock Text="{Binding Path=Unit}"/>
         </WrapPanel>
     </DataTemplate>
     <DataTemplate x:Key="PositiveRadioTemplate">

@@ -75,4 +75,37 @@ namespace SerialPortCommander
             return null;
         }
     }
+    /// <summary>
+    /// False to set background as red otherwise default background color.
+    /// </summary>
+    public class BackgroundConverter : IMultiValueConverter
+    {
+        #region IMultiValueConverter Members
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            //if (value is Boolean)
+            //{
+            //    return ((bool)value)
+            //        ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.Red;
+            //}
+
+            bool success = (bool)values[0];
+            GBS.IO.SerialCommand command = (GBS.IO.SerialCommand)values[1];
+            if (command.Enquiring)
+            {
+                if (!command.Success)
+                {
+                    command.SetError("Fail to read or write");
+                    return System.Windows.Media.Brushes.Red;
+                }
+            }
+
+            return null;
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
 }

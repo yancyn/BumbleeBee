@@ -14,6 +14,7 @@ namespace GBS.IO
         /// Determine whether this parameter command has been modified since load from setting.
         /// </summary>
         public bool HasChanged { get { return this.hasChanged; } }
+        private string errorField;
         #endregion
 
         #region Constructors
@@ -84,6 +85,8 @@ namespace GBS.IO
             this.parameterOptionsField = new List<KeyValuePair<int, string>>();
             this.parameterValueField = new Object();
             this.hasChanged = false;
+            this.enquiringField = false;
+            this.successField = false;
         }
         private void InitialDefault()
         {
@@ -121,14 +124,30 @@ namespace GBS.IO
         public void ResetState()
         {
             this.hasChanged = false;
+            OnPropertyChanged("HasChanged");
         }
         public void SetEnquiring(bool inquired)
         {
             this.enquiringField = inquired;
+            OnPropertyChanged("Enquiring");
         }
         public void SetSuccess()
         {
+            System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to success");
             this.successField = true;
+            this.enquiringField = false;//reset
+            OnPropertyChanged("Success");
+        }
+        public void SetFail()
+        {
+            System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to fail");
+            this.successField = false;
+            OnPropertyChanged("Success");
+        }
+        public void SetError(string message)
+        {
+            this.errorField = message;
+            OnPropertyChanged("Success");
         }
         #endregion
 
@@ -142,7 +161,7 @@ namespace GBS.IO
         {
             get
             {
-                string error = string.Empty;
+                this.errorField = string.Empty;
                 if (this.hasChanged)
                 {
                     switch (columnName)
@@ -158,7 +177,7 @@ namespace GBS.IO
                                     Int32 value = 0;
                                     Int32.TryParse(parameterValueField.ToString(), out value);
                                     if (value == 0 || value < min || value > max)
-                                        error = string.Format("Value must between {0} and {1}.", min, max);
+                                        this.errorField = string.Format("Value must between {0} and {1}.", min, max);
                                     break;
                                 case ParameterType.Hex:
                                     break;
@@ -167,7 +186,7 @@ namespace GBS.IO
                     }
                 }
 
-                return error;
+                return this.errorField;
             }
         }
         #endregion

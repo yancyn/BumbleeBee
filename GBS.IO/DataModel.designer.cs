@@ -69,7 +69,26 @@ namespace GBS.IO
             }
         }
 
-        public bool Enquiring { get { return this.enquiringField; } }
+        public bool Enquiring
+        {
+            get { return this.enquiringField; }
+            set
+            {
+                if ((this.enquiringField != null))
+                {
+                    if ((enquiringField.Equals(value) != true))
+                    {
+                        this.enquiringField = value;
+                        this.OnPropertyChanged("Enquiring");
+                    }
+                }
+                else
+                {
+                    this.enquiringField = value;
+                    this.OnPropertyChanged("Enquiring");
+                }
+            }
+        }
 
         public bool Success { get { return this.successField; } }
 

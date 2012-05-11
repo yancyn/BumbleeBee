@@ -27,6 +27,7 @@ namespace GBS.IO
 
         /// <summary>
         /// Current serial command sending to serial port.
+        /// TODO: check whether still available.
         /// </summary>
         private SerialCommand currentCommand;
         #endregion
@@ -139,12 +140,12 @@ namespace GBS.IO
                                     OnPropertyChanged("Codeplug");
                                 }
                             }
+
                             foreach (ParameterGroup group in this.commandGroupsField)
                             {
                                 foreach (SerialCommand command in group.Commands)
                                 {
-                                    if (command.GroupId.Equals(hold[0])
-                                        && command.ParameterId.Equals(hold[1]))
+                                    if (command.GroupId.Equals(hold[0]) && command.ParameterId.Equals(hold[1]))
                                     {
                                         switch (command.ParameterType)
                                         {
@@ -171,6 +172,7 @@ namespace GBS.IO
                                                 break;
                                             case ParameterType.Hex:
                                                 //TODO: ParameterType.Hex
+                                                command.SetSuccess();
                                                 break;
                                         }
 
@@ -330,6 +332,8 @@ namespace GBS.IO
         /// <returns></returns>
         public void Read(SerialCommand command)
         {
+            if (command == null) return;
+
             //reset carrier
             //this.successOnce = false;
             //this.result = string.Empty;
@@ -337,7 +341,8 @@ namespace GBS.IO
 
             string data = string.Format("$CMD,R,{0},{1}*CS#\r\n", command.GroupId, command.ParameterId);
             //Logger.Info(typeof(SerialCommander), "Writing " + data);
-            this.manager.Write(data);
+            command.Enquiring = true;
+            if (this.manager.IsOpen) this.manager.Write(data);
             //System.Threading.Thread.Sleep(2000);
 
             //command.ParameterValue = result;
@@ -351,6 +356,8 @@ namespace GBS.IO
         /// <returns></returns>
         public void Write(SerialCommand command)
         {
+            if (command == null) return;
+
             //reset carrier
             //this.successOnce = false;
             //this.result = string.Empty;
@@ -362,10 +369,10 @@ namespace GBS.IO
                 KeyValuePair<Int32, String> hold = (KeyValuePair<Int32, String>)command.ParameterValue;
                 data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, hold.Key);
             }
+            command.Enquiring = true;
 
             //TODO: boolean case 1 or 0
-
-            this.manager.Write(data);
+            if (this.manager.IsOpen) this.manager.Write(data);
 
             //TODO: set IDataErrorInfo success or fail
         }

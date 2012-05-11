@@ -33,6 +33,17 @@ namespace GBS.IO
             get { return _currentSerialSettings; }
             set { _currentSerialSettings = value; }
         }
+        /// <summary>
+        /// Indicate the current port is open for connected.
+        /// </summary>
+        public bool IsOpen
+        {
+            get
+            {
+                if (_serialPort == null) return false;
+                return _serialPort.IsOpen;
+            }
+        }
         #endregion
 
         public SerialPortManager()
