@@ -250,7 +250,7 @@
     <ParameterGroup>
       <Commands>
         <SerialCommand>
-          <Name>Maximum Wait Period To Process PC Command</Name>
+          <Name>Max Wait Period To Process PC Command</Name>
           <GroupId>04</GroupId>
           <ParameterId>00</ParameterId>
           <ParameterValue xsi:type="xsd:int">15</ParameterValue>
