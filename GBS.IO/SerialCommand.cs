@@ -122,9 +122,9 @@ namespace GBS.IO
         {
             this.hasChanged = false;
         }
-        public void SetInquired(bool inquired)
+        public void SetEnquiring(bool inquired)
         {
-            this.isInquiredField = inquired;
+            this.enquiringField = inquired;
         }
         public void SetSuccess()
         {

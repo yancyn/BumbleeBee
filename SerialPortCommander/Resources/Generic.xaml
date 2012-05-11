@@ -16,6 +16,19 @@
         </ObjectDataProvider.MethodParameters>
     </ObjectDataProvider>
 
+    <!-- For all labeling use in front of input control -->
+    <Style x:Key="Labeling" TargetType="{x:Type TextBlock}">
+        <Setter Property="Padding" Value="0,0,4,0"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
+    
+    <!-- For unit label use after input-->
+    <Style x:Key="Suffix" TargetType="{x:Type TextBlock}">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="TextAlignment" Value="Left"/>
+    </Style>
+    
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="4"/>
         <Setter Property="Width" Value="60"/>
@@ -80,20 +93,22 @@
     <s:LayoutSelector x:Key="LayoutSelector"/>
     <DataTemplate x:Key="TextTemplate">
         <WrapPanel>
-            <TextBlock Text="{Binding Path=Name}"/>
+            <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
-            <TextBlock Text="{Binding Path=Unit}"/>
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                     Width="80" TextAlignment="Right"/>
+            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
         </WrapPanel>
     </DataTemplate>
     <DataTemplate x:Key="IntegerTemplate">
         <WrapPanel>
-            <TextBlock Text="{Binding Path=Name}"/>
+            <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <!--<s:NumericUpDown Width="100" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}"
                              Value="{Binding Path=ParameterValue,UpdateSourceTrigger=PropertyChanged}"/>-->
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
-            <TextBlock Text="{Binding Path=Unit}"/>
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                     Width="80" TextAlignment="Right"/>
+            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
         </WrapPanel>
     </DataTemplate>
     <!--<DataTemplate x:Key="RadioTemplate">
@@ -106,19 +121,19 @@
     </DataTemplate>-->
     <DataTemplate x:Key="OptionsTemplate">
         <WrapPanel>
-            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}"/>
+            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
             <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
                       SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Text="{Binding Path=Unit}"/>
+            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
         </WrapPanel>
     </DataTemplate>
 
     <s:RadioSelector x:Key="RadioSelector"/>
     <DataTemplate x:Key="RadioTemplate">
         <WrapPanel>
-            <TextBlock Text="{Binding Path=Name}"/>
+            <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <ListView ItemsSource="{Binding Path=ParameterOptions}" ItemTemplateSelector="{StaticResource RadioSelector}"/>
-            <TextBlock Text="{Binding Path=Unit}"/>
+            <TextBlock Text="{Binding Path=Unit}" Style="{StaticResource Suffix}"/>
         </WrapPanel>
     </DataTemplate>
     <DataTemplate x:Key="PositiveRadioTemplate">

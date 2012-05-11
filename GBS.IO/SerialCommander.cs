@@ -247,7 +247,7 @@ namespace GBS.IO
                     if (command.HasChanged)
                     {
                         SetMessage(string.Format("applying {0}:{1}", command.Name, command.ParameterValue));
-                        command.SetInquired(true);
+                        command.SetEnquiring(true);
                         Write(command);
                         command.ResetState();
                     }
