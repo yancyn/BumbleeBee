@@ -4,12 +4,10 @@ A serial port listener, and configuration.
 
 Useful Links
 ==================
-**TeraTerm** - http://ttssh2.sourceforge.jp/
-
-**System.IO.Serial** - http://msdn.microsoft.com/en-us/library/bke5bt2e%28v=vs.90%29.aspx
-
-**GitSourceProvider** - Git integrator for Visual Studio.
-
+- [TeraTerm](http://ttssh2.sourceforge.jp/)
+- [SSCom32e](http://musicshield.googlecode.com/files/sscom32E.exe)
+- [System.IO.Serial](http://msdn.microsoft.com/en-us/library/bke5bt2e%28v=vs.90%29.aspx)
+- GitSourceProvider - Git integrator for Visual Studio.
 - http://www.codeproject.com/Articles/75770/Basic-serial-port-listening-application
 - http://msmvps.com/blogs/coad/archive/2005/03/23/SerialPort-_2800_RS_2D00_232-Serial-COM-Port_2900_-in-C_2300_-.NET.aspx
 - http://1.bp.blogspot.com/-0jCY9J1GZ9Q/TuBbMg9EDdI/AAAAAAAAAKE/CxEMpT186dA/s45/bumble-bee.gif
