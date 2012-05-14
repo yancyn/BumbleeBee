@@ -17,5 +17,8 @@
     <Setting Name="StopBits" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
+    <Setting Name="Company" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TAM - NETWORK</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

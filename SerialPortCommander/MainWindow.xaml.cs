@@ -35,6 +35,7 @@ namespace SerialPortCommander
         /// </summary>
         private void Initialize()
         {
+            this.Title = Properties.Settings.Default.Company + " Studio";
             commander = new SerialCommander("BumbleBee");
             //commander.ImportSetting("current.serial");
             commander.LoadSetting();
