@@ -84,7 +84,6 @@ namespace GBS.IO
         void manager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
         {
             string output = Encoding.ASCII.GetString(e.Data);
-            Logger.Info(typeof(SerialCommander), output);
             this.outputField += output;// +"\n";
             OnPropertyChanged("Output");
 
@@ -188,6 +187,8 @@ namespace GBS.IO
                 }
                 #endregion
             }
+
+            //todo: Logger.Info(typeof(SerialCommander), output);
         }
         #endregion
 

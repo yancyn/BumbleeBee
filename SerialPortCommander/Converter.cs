@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using GBS.IO;
 
 namespace SerialPortCommander
 {
@@ -74,6 +75,40 @@ namespace SerialPortCommander
 
             return null;
         }
+    }
+    public class HexConverter : IMultiValueConverter
+    {
+        #region IMultiValueConverter Members
+        //integer to hex string
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length > 1)
+            {
+                int target = (int)values[0];
+                SerialCommand command = (SerialCommand)values[1];
+
+                string output = string.Empty;
+                if (System.Convert.ToInt32(command.MaxValue) == -1)
+                    output = String.Format("0x{0:x8}", target);
+                else
+                    output = String.Format("0x{0:x4}", target);
+
+                output = output.Replace("0x", "");
+                return output.ToUpper();
+            }
+
+            return null;
+        }
+        //revert back to int and SerialCommand object
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            object[] outputs = new object[2];
+            if (value is string)
+                outputs[0] = System.Convert.ToInt32(value.ToString().ToLower(), 16);
+
+            return outputs;
+        }
+        #endregion
     }
     /// <summary>
     /// False to set background as red otherwise default background color.

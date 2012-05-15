@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace GBS.IO
 {
@@ -13,6 +14,7 @@ namespace GBS.IO
         /// <summary>
         /// Determine whether this parameter command has been modified since load from setting.
         /// </summary>
+        [XmlIgnore]
         public bool HasChanged { get { return this.hasChanged; } }
         private string errorField;
         #endregion
@@ -152,11 +154,13 @@ namespace GBS.IO
         #endregion
 
         #region IDataErrorInfo members
+        [XmlIgnore]
         public string Error
         {
-            get { return string.Empty; }
+            get { return this.errorField; }
         }
         //TODO: IDataErrorInfo
+        [XmlIgnore]
         public string this[string columnName]
         {
             get

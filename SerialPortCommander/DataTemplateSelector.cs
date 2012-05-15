@@ -32,6 +32,7 @@ namespace SerialPortCommander
                     case ParameterType.Integer:
                         return element.FindResource("IntegerTemplate") as DataTemplate;
                     case ParameterType.Hex:
+                        return element.FindResource("HexTemplate") as DataTemplate;
                         break;
                 }
             }
@@ -39,7 +40,9 @@ namespace SerialPortCommander
             return base.SelectTemplate(item, container);
         }
     }
-
+    /// <summary>
+    /// Radio selector data template.
+    /// </summary>
     public class RadioSelector : DataTemplateSelector
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
