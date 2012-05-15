@@ -69,6 +69,7 @@ namespace GBS.IO
             }
         }
 
+        [XmlIgnore]
         public bool Enquiring
         {
             get { return this.enquiringField; }
@@ -89,7 +90,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public bool Success { get { return this.successField; } }
 
         public string GroupId

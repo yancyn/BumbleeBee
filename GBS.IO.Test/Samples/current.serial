@@ -104,21 +104,21 @@
           <Name>Tag ID</Name>
           <GroupId>02</GroupId>
           <ParameterId>02</ParameterId>
-          <ParameterValue xsi:type="xsd:string">0x12345678</ParameterValue>
+          <ParameterValue xsi:type="xsd:int">305419896</ParameterValue>
           <ParameterOptions />
-          <ParameterType>String</ParameterType>
-          <MinValue xsi:type="xsd:string">0x000000</MinValue>
-          <MaxValue xsi:type="xsd:string">0xFFFFFF</MaxValue>
+          <ParameterType>Hex</ParameterType>
+          <MinValue xsi:type="xsd:int">0</MinValue>
+          <MaxValue xsi:type="xsd:int">-1</MaxValue>
         </SerialCommand>
         <SerialCommand>
           <Name>Group ID</Name>
           <GroupId>02</GroupId>
           <ParameterId>03</ParameterId>
-          <ParameterValue xsi:type="xsd:string">0x9999</ParameterValue>
+          <ParameterValue xsi:type="xsd:int">39321</ParameterValue>
           <ParameterOptions />
-          <ParameterType>String</ParameterType>
-          <MinValue xsi:type="xsd:string">0x0000</MinValue>
-          <MaxValue xsi:type="xsd:string">0xFFFF</MaxValue>
+          <ParameterType>Hex</ParameterType>
+          <MinValue xsi:type="xsd:string">0</MinValue>
+          <MaxValue xsi:type="xsd:string">65535</MaxValue>
         </SerialCommand>
       </Commands>
     </ParameterGroup>

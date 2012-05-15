@@ -384,14 +384,41 @@ namespace GBS.IO.Test
             string expected = "0x000f";
             string actual = String.Format("0x{0:x4}", target);//"0x{0:x8}"
             Assert.AreEqual(expected, actual);
+
+            target = 65535;
+            expected = "0xFFFF";
+            actual = String.Format("0x{0:x4}", target);
+            Assert.AreEqual(expected.ToUpper(), actual.ToUpper());
         }
         [TestMethod()]
         public void HexToIntTest()
         {
-            string target = "0x00ff";
-            int expected = 255;
+            string target = "0x0000";
+            int expected = 0;
             int actual = Convert.ToInt32(target.ToLower(), 16);
             Assert.AreEqual(expected, actual);
+
+            target = "0x00000000";
+            expected = 0;
+            actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+            target = "0xFFFF";
+            expected = 65535;
+            actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+            target = "0x0000FFFF";
+            expected = 65535;
+            actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+            target = "0xFFFFFFFF";
+            expected = -1;
+            actual = Convert.ToInt32(target.ToLower(), 16);
+            Assert.AreEqual(expected, actual);
+
+
 
             target = "0x9999";
             expected = 39321;

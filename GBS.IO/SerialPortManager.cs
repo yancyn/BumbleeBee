@@ -49,11 +49,8 @@ namespace GBS.IO
         public SerialPortManager()
         {
             // Finding installed serial ports on hardware
-            string[] ports = SerialPort.GetPortNames();
-            if (ValidatePortNames(ports))
-                _currentSerialSettings.PortNameCollection = ports;
-            else
-                _currentSerialSettings.PortNameCollection = GetPorts();
+            string[] ports = ValidatePortNames(SerialPort.GetPortNames());
+            _currentSerialSettings.PortNameCollection = ports;
             _currentSerialSettings.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(_currentSerialSettings_PropertyChanged);
 
             // If serial ports is found, we select the first found
@@ -176,17 +173,23 @@ namespace GBS.IO
         /// </summary>
         /// <param name="ports"></param>
         /// <returns></returns>
-        private bool ValidatePortNames(string[] ports)
+        private string[] ValidatePortNames(string[] ports)
         {
             bool valid = true;
+            List<string> output = new List<string>();
             foreach (string port in ports)
             {
                 Match match = Regex.Match(port, @"COM\d*");
-                valid &= (match.Success)
-                    ? (match.Groups[0].Value.Equals(port)) : false;
+                if (match.Success)
+                {
+                    output.Add(match.Groups[0].Value);
+                    valid &= match.Groups[0].Value.Equals(port);
+                }
+                else
+                    valid &= false;
             }
 
-            return valid;
+            return output.ToArray();
         }
         /// <summary>
         /// HACK: Manipulate port name manually despite of available of local machine.
