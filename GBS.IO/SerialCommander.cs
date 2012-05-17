@@ -280,6 +280,7 @@ namespace GBS.IO
                         command.SetEnquiring(true);
                         Write(command);
                         command.ResetState();
+                        Thread.Sleep(1000);//give hardware device a rest and process time
                     }
                 }
             }
@@ -291,37 +292,31 @@ namespace GBS.IO
         {
             this.isWriting = false;
 
-            //get version
-            if (this.firmwareField.Length == 0)
+            for (int i = 0; i < 5; i++)
             {
-                SetMessage("Reading firmware...");
-                SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
-                command.GroupId = "05";
-                command.ParameterId = "02";
-                for (int i = 0; i < 3; i++)
-                    Read(command);
-
-                //ThreadStart job = new ThreadStart(SerialCommander.ThreadJob);
-                //Thread newThread = new Thread(ThreadJob);
-                //newThread.Start(command);
-            }
-
-            if (this.codeplugField.Length == 0)
-            {
-                SetMessage("Reading codeplug...");
-                SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
-                command.GroupId = "05";
-                command.ParameterId = "03";
-                for (int i = 0; i < 3; i++)
-                    Read(command);
-            }
-
-            //get all the command
-            foreach (ParameterGroup group in this.commandGroupsField)
-            {
-                foreach (SerialCommand cmd in group.Commands)
+                //get version
+                if (this.firmwareField.Length == 0)
                 {
-                    for (int i = 0; i < 3; i++)
+                    SetMessage("Reading firmware...");
+                    SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
+                    command.GroupId = "05";
+                    command.ParameterId = "02";
+                    Read(command);
+                }
+
+                if (this.codeplugField.Length == 0)
+                {
+                    SetMessage("Reading codeplug...");
+                    SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
+                    command.GroupId = "05";
+                    command.ParameterId = "03";
+                    Read(command);
+                }
+
+                //get all the command
+                foreach (ParameterGroup group in this.commandGroupsField)
+                {
+                    foreach (SerialCommand cmd in group.Commands)
                     {
                         SetMessage("Reading " + cmd.Name + "...");
                         Read(cmd);
@@ -362,14 +357,10 @@ namespace GBS.IO
         {
             if (command == null) return;
 
-            //reset carrier
-            //this.successOnce = false;
-            //this.result = string.Empty;
-            this.currentCommand = command;
-
-            string data = string.Format("$CMD,R,{0},{1}*CS#\r\n", command.GroupId, command.ParameterId);
-            //Logger.Info(typeof(SerialCommander), "Writing " + data);
             command.Enquiring = true;
+            string data = string.Format("$CMD,R,{0},{1}*CS#\r\n", command.GroupId, command.ParameterId);
+
+            System.Diagnostics.Debug.WriteLine("Writing " + data);
             if (this.manager.IsOpen) this.manager.Write(data);
             //System.Threading.Thread.Sleep(2000);
 
@@ -386,10 +377,7 @@ namespace GBS.IO
         {
             if (command == null) return;
 
-            //reset carrier
-            //this.successOnce = false;
-            //this.result = string.Empty;
-            this.currentCommand = command;
+            command.Enquiring = true;
 
             string data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, command.ParameterValue.ToString());
             if (command.ParameterValue is KeyValuePair<Int32, String>)
@@ -397,9 +385,9 @@ namespace GBS.IO
                 KeyValuePair<Int32, String> hold = (KeyValuePair<Int32, String>)command.ParameterValue;
                 data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, hold.Key);
             }
-            command.Enquiring = true;
 
             //TODO: boolean case 1 or 0
+            System.Diagnostics.Debug.WriteLine("Writing " + data);
             if (this.manager.IsOpen) this.manager.Write(data);
 
             //TODO: set IDataErrorInfo success or fail
@@ -494,11 +482,11 @@ namespace GBS.IO
             //this.messageField = "Ready";
             //OnPropertyChanged("Message");
         }
-        private void ThreadJob(object command)
-        {
-            for (int i = 0; i < 3; i++)
-                Read((SerialCommand)command);
-        }
+        //private void ThreadJob(object command)
+        //{
+        //    for (int i = 0; i < 3; i++)
+        //        Read((SerialCommand)command);
+        //}
         #endregion
     }
     /// <summary>

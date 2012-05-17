@@ -136,9 +136,13 @@ namespace GBS.IO
         public void SetSuccess()
         {
             System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to success");
+
             this.successField = true;
             this.enquiringField = false;//reset
             OnPropertyChanged("Success");
+
+            this.hasChanged = false;
+            OnPropertyChanged("HasChanged");
         }
         public void SetFail()
         {

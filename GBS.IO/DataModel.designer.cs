@@ -285,7 +285,8 @@ namespace GBS.IO
             if ((handler != null))
             {
                 handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-                this.hasChanged |= true;
+                if (propertyName.Equals("ParameterValue"))
+                    this.hasChanged |= true;
             }
         }
     }
