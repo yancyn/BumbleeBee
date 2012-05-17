@@ -84,6 +84,7 @@ namespace GBS.IO
         void manager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
         {
             string output = Encoding.ASCII.GetString(e.Data);
+            this.outputsField.Add(output);
             this.outputField += output;// +"\n";
             OnPropertyChanged("Output");
 
@@ -101,6 +102,23 @@ namespace GBS.IO
             else
             {
                 #region Reading data from serial port
+                //ProcessQueue(output);
+                #endregion
+            }
+
+            //todo: Logger.Info(typeof(SerialCommander), output);
+        }
+        /// <summary>
+        /// todo: refactor code
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void outputs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            while (this.outputsField.Count > 0)
+            {
+                System.Diagnostics.Debug.WriteLine("outputs_CollectionChanged");
+                string output = this.outputsField[0];
                 string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string line in lines)
                 {
@@ -185,14 +203,16 @@ namespace GBS.IO
                         break;
                     }
                 }
-                #endregion
-            }
 
-            //todo: Logger.Info(typeof(SerialCommander), output);
+                this.outputsField.RemoveAt(0);
+            }
         }
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Initial variables.
+        /// </summary>
         protected void Initialize()
         {
             this.isWriting = false;
@@ -201,6 +221,8 @@ namespace GBS.IO
             this.codeplugField = string.Empty;
             this.messageField = "Ready";
             this.outputField = string.Empty;
+            this.outputsField = new ObservableCollection<string>();
+            this.outputsField.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(outputs_CollectionChanged);
             this.commandGroupsField = new ObservableCollection<ParameterGroup>();
 
             this.manager = new SerialPortManager();
@@ -212,6 +234,11 @@ namespace GBS.IO
             this.applyCommand = new ApplyCommand(this);
             this.exportCommand = new ExportCommand(this);
             this.importCommand = new ImportCommand(this);
+
+            //threadStart = new ThreadStart(ProcessQueue);
+            //Thread thread = new Thread(threadStart);
+            //thread.Start();
+            //System.Diagnostics.Debug.WriteLine("thread started");
         }
         /// <summary>
         /// Deprecated.

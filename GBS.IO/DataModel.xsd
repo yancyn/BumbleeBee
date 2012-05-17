@@ -89,6 +89,9 @@
         </xs:annotation>
       </xs:element>
       <xs:sequence>
+        <xs:element name="Outputs" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:sequence>
         <xs:element name="CommandGroups" type="ParameterGroup" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
     </xs:sequence>

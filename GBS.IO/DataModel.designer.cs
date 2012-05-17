@@ -385,6 +385,8 @@ namespace GBS.IO
 
         private string outputField;
 
+        private ObservableCollection<string> outputsField;
+
         private ObservableCollection<ParameterGroup> commandGroupsField;
 
         private static System.Xml.Serialization.XmlSerializer serializer;
@@ -505,6 +507,30 @@ namespace GBS.IO
                 {
                     this.outputField = value;
                     this.OnPropertyChanged("Output");
+                }
+            }
+        }
+
+        public ObservableCollection<string> Outputs
+        {
+            get
+            {
+                return this.outputsField;
+            }
+            set
+            {
+                if ((this.outputsField != null))
+                {
+                    if ((outputsField.Equals(value) != true))
+                    {
+                        this.outputsField = value;
+                        this.OnPropertyChanged("Outputs");
+                    }
+                }
+                else
+                {
+                    this.outputsField = value;
+                    this.OnPropertyChanged("Outputs");
                 }
             }
         }
