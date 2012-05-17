@@ -29,5 +29,10 @@ namespace SerialPortCommander
             //SerialCommand command = (SerialCommand)(sender as RadioButton).DataContext;
             //command.ParameterValue = Convert.ToInt32((sender as RadioButton).GroupName);
         }
+
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine((sender as RadioButton).DataContext);
+        }
     }
 }

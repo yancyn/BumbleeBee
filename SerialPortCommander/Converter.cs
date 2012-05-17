@@ -56,24 +56,20 @@ namespace SerialPortCommander
                 passin = (parameter.ToString() == "1") ? true : false;
 
             return (actual == passin);
-            throw new NotImplementedException();
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //int converted = 0;
-            //if (value == null) return converted;
+            int converted = 0;
+            if (value == null) return converted;
 
-            //if (value is bool)
-            //    converted = ((bool)value) ? 1 : 0;
-            //else if (value is int)
-            //    converted = (int)value;
-            //else if (value is string)
-            //    converted = (value.ToString() == "1") ? 1 : 0;
-            //return converted;
+            if (value is bool)
+                converted = ((bool)value) ? 1 : 0;
+            else if (value is int)
+                converted = (System.Convert.ToInt32(value) == 1) ? 1 : 0;
+            else if (value is string)
+                converted = (value.ToString() == "1") ? 1 : 0;
 
-            //throw new NotImplementedException();
-
-            return null;
+            return converted;
         }
     }
     public class HexConverter : IMultiValueConverter
