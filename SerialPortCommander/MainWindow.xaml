@@ -137,7 +137,7 @@
                                   ItemsSource="{Binding Path=CommandGroups,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
+                                    <WrapPanel Orientation="Horizontal" VerticalAlignment="Bottom"/>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                             <ListView.ItemTemplate>
@@ -202,6 +202,9 @@
                 </TabItem>
                 <TabItem Header="Debug" Name="tabItem5">
                     <DockPanel LastChildFill="True">
+                        <WrapPanel HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                            <Button Command="{Binding ClearOutputCommand}" ToolTip="Clear all debug message">Clear</Button>
+                        </WrapPanel>
                         <TextBox x:Name="debugWindow" IsReadOnly="True" Text="{Binding Path=Output,UpdateSourceTrigger=PropertyChanged}"
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </DockPanel>

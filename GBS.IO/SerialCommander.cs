@@ -58,6 +58,9 @@ namespace GBS.IO
         public ExportCommand ExportCommand { get { return this.exportCommand; } }
         private ImportCommand importCommand;
         public ImportCommand ImportCommand { get { return this.importCommand; } }
+
+        private ClearOutputCommand clearOutputCommand;
+        public ClearOutputCommand ClearOutputCommand { get { return this.clearOutputCommand; } }
         #endregion
 
         #region Constructors
@@ -241,6 +244,7 @@ namespace GBS.IO
             this.applyCommand = new ApplyCommand(this);
             this.exportCommand = new ExportCommand(this);
             this.importCommand = new ImportCommand(this);
+            this.clearOutputCommand = new ClearOutputCommand(this);
 
             //threadStart = new ThreadStart(ProcessQueue);
             //Thread thread = new Thread(threadStart);
@@ -286,6 +290,12 @@ namespace GBS.IO
         /// </summary>
         public void Apply()
         {
+            if (!manager.IsOpen)
+            {
+                SetMessage("No port connected!");
+                return;
+            }
+
             this.isWriting = true;
             foreach (ParameterGroup group in this.commandGroupsField)
             {
@@ -295,10 +305,21 @@ namespace GBS.IO
                     {
                         SetMessage(string.Format("applying {0}:{1}", command.Name, command.ParameterValue));
                         command.SetEnquiring(true);
-                        Write(command);
-                        command.ResetState();
-                        Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
+
+                        try
+                        {
+                            Write(command);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(typeof(SerialCommander), ex);
+                            SetMessage(ex.Message);
+                            break;
+                        }
                     }
+
+                    command.ResetState();
+                    Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
                 }
             }
         }
@@ -361,6 +382,14 @@ namespace GBS.IO
         {
             SetMessage("Export setting to file...");
             SaveToFile(fileName);
+        }
+        /// <summary>
+        /// Clear all output message to debug window in interface.
+        /// </summary>
+        public void ClearOutput()
+        {
+            this.outputField = string.Empty;
+            OnPropertyChanged("Output");
         }
         #endregion
 
@@ -627,6 +656,24 @@ namespace GBS.IO
         public void Execute(object parameter)
         {
             this.manager.ImportSetting(parameter.ToString());
+        }
+        #endregion
+    }
+
+    public class ClearOutputCommand : ICommand
+    {
+        private SerialCommander manager;
+        public ClearOutputCommand(SerialCommander manager)
+        { this.manager = manager; }
+        #region ICommand Members
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged;
+        public void Execute(object parameter)
+        {
+            this.manager.ClearOutput();
         }
         #endregion
     }
