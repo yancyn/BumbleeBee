@@ -59,7 +59,7 @@ namespace SerialPortCommander
         }
         private void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
-            string version = "ver " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string version = "Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             MessageBox.Show("GBS Embeded Solution" + "\n" + version);
         }
         private void ReportBugLink_RequestNavigate(object sender, RequestNavigateEventArgs e)
