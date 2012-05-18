@@ -14,6 +14,10 @@ namespace GBS.IO
     {
         #region Fields
         /// <summary>
+        /// Interval waiting time when message keep updating.
+        /// </summary>
+        const int ONE_MOMENT = 1000;
+        /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
         /// True it is writing data into serial port otherwise it is just retrieving value. 
         /// </summary>
@@ -56,6 +60,7 @@ namespace GBS.IO
         public ImportCommand ImportCommand { get { return this.importCommand; } }
         #endregion
 
+        #region Constructors
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -79,6 +84,7 @@ namespace GBS.IO
         {
             Dispose();
         }
+        #endregion
 
         #region Events
         void manager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
@@ -188,7 +194,8 @@ namespace GBS.IO
                                                 command.SetSuccess();
                                                 break;
                                             case ParameterType.Hex:
-                                                //TODO: ParameterType.Hex
+                                                //from 0xFFFF convert back to 65535
+                                                command.ParameterValue = System.Convert.ToInt32(hold[2].ToString().ToLower(), 16);
                                                 command.SetSuccess();
                                                 break;
                                         }
@@ -253,7 +260,17 @@ namespace GBS.IO
             catch (Exception ex)
             {
                 Logger.Error(typeof(SerialCommander), ex);
+                this.messageField = ex.Message;
+                OnPropertyChanged("Message");
+
+                this.manager.StopListening();
+                //Disconnect();
                 return;
+            }
+            finally
+            {
+                //Thread.Sleep(ONE_MOMENT);
+                //SetMessage("Ready");
             }
         }
         /// <summary>
@@ -280,7 +297,7 @@ namespace GBS.IO
                         command.SetEnquiring(true);
                         Write(command);
                         command.ResetState();
-                        Thread.Sleep(1000);//give hardware device a rest and process time
+                        Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
                     }
                 }
             }
@@ -430,8 +447,8 @@ namespace GBS.IO
                             //    cmd.MinValue = string.Empty;
                             break;
                         case ParameterType.Hex:
-                            //TODO: default hex value
-                            cmd.ParameterValue = 0x0000;
+                            //default hex value
+                            cmd.ParameterValue = 0;// 0x0000;
                             break;
                     }
 

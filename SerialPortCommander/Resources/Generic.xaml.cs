@@ -25,14 +25,9 @@ namespace SerialPortCommander
         }
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine((sender as RadioButton).DataContext);
+            System.Diagnostics.Debug.WriteLine("RadioButton_Checked: " + (sender as RadioButton).DataContext);
             //SerialCommand command = (SerialCommand)(sender as RadioButton).DataContext;
             //command.ParameterValue = Convert.ToInt32((sender as RadioButton).GroupName);
-        }
-
-        private void RadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine((sender as RadioButton).DataContext);
         }
     }
 }

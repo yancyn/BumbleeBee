@@ -12,6 +12,7 @@ namespace GBS.IO
     /// </summary>
     public class SerialSettings : INotifyPropertyChanged
     {
+        #region Fields
         public event PropertyChangedEventHandler PropertyChanged;
         string _portName = "";
         string[] _portNameCollection;
@@ -21,6 +22,7 @@ namespace GBS.IO
         int _dataBits = 8;
         int[] _dataBitsCollection = new int[] { 5, 6, 7, 8 };
         StopBits _stopBits = StopBits.One;
+        #endregion
 
         #region Properties
         /// <summary>
@@ -53,7 +55,6 @@ namespace GBS.IO
                 }
             }
         }
-
         /// <summary>
         /// One of the Parity values.
         /// </summary>
@@ -99,7 +100,6 @@ namespace GBS.IO
                 }
             }
         }
-
         /// <summary>
         /// Available ports on the computer
         /// </summary>
@@ -108,7 +108,6 @@ namespace GBS.IO
             get { return _portNameCollection; }
             set { _portNameCollection = value; }
         }
-
         /// <summary>
         /// Available baud rates for current serial port
         /// </summary>
@@ -116,7 +115,6 @@ namespace GBS.IO
         {
             get { return _baudRateCollection; }
         }
-
         /// <summary>
         /// Available databits setting
         /// </summary>
@@ -196,7 +194,6 @@ namespace GBS.IO
 
             SendPropertyChangedEvent("BaudRateCollection");
         }
-
         /// <summary>
         /// Send a PropertyChanged event
         /// </summary>
@@ -206,7 +203,6 @@ namespace GBS.IO
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
         #endregion
     }
 }

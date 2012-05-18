@@ -90,8 +90,7 @@ namespace GBS.IO
         public void StartListening()
         {
             // Closing serial port if it is open
-            if (_serialPort != null && _serialPort.IsOpen)
-                _serialPort.Close();
+            StopListening();
 
             // Setting serial port settings
             _serialPort = new SerialPort(
@@ -110,8 +109,11 @@ namespace GBS.IO
         /// </summary>
         public void StopListening()
         {
-            System.Diagnostics.Debug.WriteLine("disconnect");
-            _serialPort.Close();
+            if (_serialPort != null && _serialPort.IsOpen)
+            {
+                _serialPort.DataReceived -= new SerialDataReceivedEventHandler(_serialPort_DataReceived);
+                _serialPort.Close();
+            }
         }
         /// <summary>
         /// Retrieves the current selected device's COMMPROP structure, and extracts the dwSettableBaud property
