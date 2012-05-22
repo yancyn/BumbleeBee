@@ -415,7 +415,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public string Firmware
         {
             get
@@ -439,7 +439,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public string Codeplug
         {
             get
@@ -463,7 +463,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public string Message
         {
             get
@@ -487,7 +487,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public string Output
         {
             get
@@ -511,7 +511,7 @@ namespace GBS.IO
                 }
             }
         }
-
+        [XmlIgnore]
         public ObservableCollection<string> Outputs
         {
             get

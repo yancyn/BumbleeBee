@@ -59,6 +59,9 @@ namespace GBS.IO
         private ImportCommand importCommand;
         public ImportCommand ImportCommand { get { return this.importCommand; } }
 
+        private LoadModeCommand loadModeCommand;
+        public LoadModeCommand LoadModeCommand { get { return this.loadModeCommand; } }
+
         private ClearOutputCommand clearOutputCommand;
         public ClearOutputCommand ClearOutputCommand { get { return this.clearOutputCommand; } }
         #endregion
@@ -244,6 +247,7 @@ namespace GBS.IO
             this.applyCommand = new ApplyCommand(this);
             this.exportCommand = new ExportCommand(this);
             this.importCommand = new ImportCommand(this);
+            this.loadModeCommand = new LoadModeCommand(this);
             this.clearOutputCommand = new ClearOutputCommand(this);
 
             //threadStart = new ThreadStart(ProcessQueue);
@@ -367,10 +371,14 @@ namespace GBS.IO
         /// </summary>
         public void LoadSetting()
         {
-            SetMessage("Load setting...");
-            if (File.Exists(DEFAULT_FILENAME))
+            LoadSetting(DEFAULT_FILENAME);
+        }
+        public void LoadSetting(string fileName)
+        {
+            SetMessage("Load setting from " + fileName + "...");
+            if (File.Exists(fileName))
             {
-                SerialCommander commander = LoadFromFile(DEFAULT_FILENAME);
+                SerialCommander commander = LoadFromFile(fileName);
                 Clone(commander);
             }
             //commander.Dispose();
@@ -445,6 +453,7 @@ namespace GBS.IO
         private void Clone(SerialCommander commander)
         {
             this.nameField = commander.Name;
+            this.commandGroupsField.Clear();
             foreach (ParameterGroup group in commander.CommandGroups)
             {
                 ParameterGroup g = new ParameterGroup(group.Header);
@@ -656,6 +665,28 @@ namespace GBS.IO
         public void Execute(object parameter)
         {
             this.manager.ImportSetting(parameter.ToString());
+        }
+        #endregion
+    }
+    /// <summary>
+    /// Switching different mode like PRX Modem, Page, or PTX unit.
+    /// </summary>
+    public class LoadModeCommand : ICommand
+    {
+        private SerialCommander manager;
+        public LoadModeCommand(SerialCommander manager)
+        {
+            this.manager = manager;
+        }
+        #region ICommand Members
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged;
+        public void Execute(object parameter)
+        {
+            this.manager.LoadSetting(parameter.ToString());
         }
         #endregion
     }

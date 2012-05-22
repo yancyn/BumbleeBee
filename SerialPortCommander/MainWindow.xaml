@@ -59,9 +59,9 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="De_vice">
-                    <MenuItem Header="PRX Modem"/>
-                    <MenuItem Header="PRX Pager"/>
-                    <MenuItem Header="PTX"/>
+                    <MenuItem Header="PRX Modem" Command="{Binding LoadModeCommand}" CommandParameter="current.serial"/>
+                    <MenuItem Header="PRX Pager" Command="{Binding LoadModeCommand}" CommandParameter="current1.serial"/>
+                    <MenuItem Header="PTX" Command="{Binding LoadModeCommand}" CommandParameter="current2.serial"/>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Help">
