@@ -100,7 +100,7 @@ namespace SerialPortCommander
         {
             object[] outputs = new object[2];
             if (value is string)
-                outputs[0] = System.Convert.ToInt32(value.ToString().ToLower(), 16);
+                outputs[0] = System.Convert.ToInt64(value.ToString().ToLower(), 16);
 
             return outputs;
         }

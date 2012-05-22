@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
@@ -172,6 +173,7 @@ namespace GBS.IO
                 this.errorField = string.Empty;
                 if (this.hasChanged)
                 {
+                    Int32 min = 0, max = 0, value = 0;
                     switch (columnName)
                     {
                         case "ParameterValue":
@@ -180,14 +182,30 @@ namespace GBS.IO
                                 case ParameterType.String:
                                     break;
                                 case ParameterType.Integer:
-                                    Int32 min = (Int32)this.minValueField;
-                                    Int32 max = (Int32)this.maxValueField;
-                                    Int32 value = 0;
+                                    min = (Int32)this.minValueField;
+                                    max = (Int32)this.maxValueField;
+                                    value = 0;
                                     Int32.TryParse(parameterValueField.ToString(), out value);
                                     if (value == 0 || value < min || value > max)
                                         this.errorField = string.Format("Value must between {0} and {1}.", min, max);
                                     break;
                                 case ParameterType.Hex:
+                                    min = Convert.ToInt32(this.minValueField);
+                                    max = Convert.ToInt32(this.maxValueField);
+                                    if (max == -1)
+                                    {
+                                        //Int64 bigValue = 0;
+                                        //Int64.TryParse(parameterValueField.ToString(), out bigValue);
+                                        //TODO: if (!IsHexString(bigValue, 8))
+                                        //    this.errorField = "Value must between 0x00000000 and 0xFFFFFFFF";
+                                    }
+                                    else
+                                    {
+                                        value = 0;
+                                        Int32.TryParse(parameterValueField.ToString(), out value);
+                                        if (value < min || value > max)
+                                            this.errorField = "Value must between 0x0000 and 0xFFFF";
+                                    }
                                     break;
                             }
                             break;
@@ -198,5 +216,22 @@ namespace GBS.IO
             }
         }
         #endregion
+        /// <summary>
+        /// Return true if it is in the correct format of n digit hex string.
+        /// </summary>
+        /// <param name="sender">Input string to check.</param>
+        /// <param name="digit">Normally 4 or 8.</param>
+        /// <returns></returns>
+        private bool IsHexString(string sender, int digit)
+        {
+            Match match = Regex.Match(sender, "[0][x][0-9a-fA-F]{" + digit + "}");
+            if (match.Success)
+            {
+                if (match.Groups[0].Value.Equals(sender))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }
