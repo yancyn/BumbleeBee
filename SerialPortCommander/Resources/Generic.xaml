@@ -151,14 +151,7 @@
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
-    <!--<DataTemplate x:Key="RadioTemplate">
-        <WrapPanel>
-            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}"/>
-            <ComboBox Style="{StaticResource TwoComboBox}" ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
-                      SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Text="{Binding Path=Unit}"/>
-        </WrapPanel>
-    </DataTemplate>-->
+    
     <DataTemplate x:Key="OptionsTemplate">
         <WrapPanel>
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
@@ -169,23 +162,33 @@
     </DataTemplate>
 
     <s:RadioSelector x:Key="RadioSelector"/>
+    <s:GetNameConverter x:Key="GetNameConverter"/>
     <DataTemplate x:Key="RadioTemplate">
         <WrapPanel>
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
-            <ListView ItemsSource="{Binding Path=ParameterOptions}" ItemTemplateSelector="{StaticResource RadioSelector}"/>
+            <RadioButton GroupName="{Binding Name}"
+                Content="{Binding ParameterOptions[0],Converter={StaticResource GetNameConverter}}"
+                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},
+                    ConverterParameter=0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <RadioButton GroupName="{Binding Name}"
+                Content="{Binding ParameterOptions[1],Converter={StaticResource GetNameConverter}}"
+                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},
+                    ConverterParameter=1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
+    
+    <!-- deprecated -->
     <DataTemplate x:Key="PositiveRadioTemplate">
-        <RadioButton Content="{Binding Value}" GroupName="{Binding Key}"
+        <RadioButton Content="{Binding Value}" GroupName="{Binding Value}"
             IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
             Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=1,
-            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Checked="RadioButton_Checked"/>
+            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
     <DataTemplate x:Key="NegativeRadioTemplate">
-        <RadioButton Content="{Binding Value}" GroupName="{Binding Key}"
+        <RadioButton Content="{Binding Value}" GroupName="{Binding Value}"
             IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
             Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=0,
-            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Checked="RadioButton_Checked"/>
+            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
 </ResourceDictionary>

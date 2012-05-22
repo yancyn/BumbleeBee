@@ -93,7 +93,7 @@ namespace SerialPortCommander
                 return output.ToUpper();
             }
 
-            return null;
+            throw new NotImplementedException();
         }
         //revert back to int and SerialCommand object
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -114,12 +114,6 @@ namespace SerialPortCommander
         #region IMultiValueConverter Members
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            //if (value is Boolean)
-            //{
-            //    return ((bool)value)
-            //        ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.Red;
-            //}
-
             bool success = (bool)values[0];
             GBS.IO.SerialCommand command = (GBS.IO.SerialCommand)values[1];
             if (command.Enquiring)
@@ -134,6 +128,26 @@ namespace SerialPortCommander
             return null;
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
+    public class GetNameConverter : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is GBS.IO.KeyValuePair<int, string>)
+            {
+                GBS.IO.KeyValuePair<int, string> pair = (GBS.IO.KeyValuePair<int, string>)value;
+                return pair.Value;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

@@ -33,7 +33,6 @@ namespace SerialPortCommander
                         return element.FindResource("IntegerTemplate") as DataTemplate;
                     case ParameterType.Hex:
                         return element.FindResource("HexTemplate") as DataTemplate;
-                        break;
                 }
             }
 

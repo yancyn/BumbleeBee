@@ -3,11 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TestWindow" Height="300" Width="300">
     <StackPanel>
-        <Button>
-            <Path Fill="Blue" Data="M 0 6 L 12 6 L 6 0 Z"/>
-        </Button>
-        <Button>
-            <Path Fill="Blue" Data="M 0 0 L 6 6 L 12 0 Z"/>
-        </Button>
+        <WrapPanel>
+            <RadioButton Content="Enable" GroupName="0000"/>
+            <RadioButton Content="Disable" GroupName="0000"/>
+        </WrapPanel>
+        <WrapPanel>
+            <RadioButton Content="Wakeup" GroupName="0001"/>
+            <RadioButton Content="Asleep" GroupName="0001"/>
+        </WrapPanel>
     </StackPanel>
 </Window>
