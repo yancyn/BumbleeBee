@@ -133,24 +133,24 @@
                             <TextBlock Text="Codeplug: " Margin="20,0,0,0"/>
                             <TextBlock Text="{Binding Path=Codeplug,UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
-                        <ListView Name="listView1" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        <ItemsControl Name="listView1" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                   ItemsSource="{Binding Path=CommandGroups,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
-                            <ListView.ItemsPanel>
+                            <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" VerticalAlignment="Bottom"/>
+                                    <WrapPanel/>
                                 </ItemsPanelTemplate>
-                            </ListView.ItemsPanel>
-                            <ListView.ItemTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <GroupBox Header="{Binding Path=Header,UpdateSourceTrigger=PropertyChanged}" Margin="4px">
                                         <ListView BorderThickness="0"
-                                                  ItemsSource="{Binding Commands,UpdateSourceTrigger=PropertyChanged}"
-                                                  ItemTemplateSelector="{StaticResource LayoutSelector}">
+                                            ItemsSource="{Binding Commands,UpdateSourceTrigger=PropertyChanged}"
+                                            ItemTemplateSelector="{StaticResource LayoutSelector}">
                                         </ListView>
                                     </GroupBox>
                                 </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </DockPanel>
                 </TabItem>
                 <TabItem Header="Upgrade" Name="tabItem2">
