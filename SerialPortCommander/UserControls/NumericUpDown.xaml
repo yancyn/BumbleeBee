@@ -16,9 +16,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBox Grid.RowSpan="2"
-                 x:Name="txtNum" x:FieldModifier="private"
-                 Text="{Binding ElementName=numericUpDown,Path=Value}" TextChanged="txtNum_TextChanged"/>
+        <TextBox Grid.RowSpan="2" Width="80" x:Name="txtNum" x:FieldModifier="private" TextChanged="txtNum_TextChanged"
+                 Text="{Binding ElementName=numericUpDown,Path=Value}"/>
         <Button Grid.Row="0" Grid.Column="1" x:Name="cmdUp" Style="{StaticResource UpButton}" Click="cmdUp_Click" />
         <Button Grid.Row="1" Grid.Column="1" x:Name="cmdDown" Style="{StaticResource DownButton}" Click="cmdDown_Click" />
     </Grid>

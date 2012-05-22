@@ -24,7 +24,7 @@ namespace SerialPortCommander
         /// </summary>
         public Int32 Value
         {
-            get { return (Int32)GetValue(ValueProperty); }
+            get { return Convert.ToInt32(GetValue(ValueProperty)); }
             set
             {
                 SetValue(ValueProperty, value);
@@ -86,14 +86,17 @@ namespace SerialPortCommander
         }
         private void cmdUp_Click(object sender, RoutedEventArgs e)
         {
-            Value++;
-            this.Value = Math.Min(this.Value, this.MaxValue);
+            this.Value++;
             System.Diagnostics.Debug.WriteLine(this.Value);
+            ValueChanged();
+            //this.Value = Math.Min(this.Value, this.MaxValue);
         }
         private void cmdDown_Click(object sender, RoutedEventArgs e)
         {
-            Value--;
-            this.Value = Math.Max(this.Value, this.MinValue);
+            this.Value--;
+            System.Diagnostics.Debug.WriteLine(this.Value);
+            ValueChanged();
+            //this.Value = Math.Max(this.Value, this.MinValue);
         }
         private void ValueChanged()
         {
@@ -104,8 +107,8 @@ namespace SerialPortCommander
         }
         private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
         {
-            int value = 0;
-            if (int.TryParse(txtNum.Text, out value))
+            Int32 value = 0;
+            if (Int32.TryParse(txtNum.Text, out value))
                 this.Value = value;
             //ValueChanged();
         }
