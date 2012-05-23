@@ -44,6 +44,17 @@ namespace SerialPortCommander
         #endregion
 
         #region Events
+        private void menuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
+            foreach (MenuItem menu in menus)
+            {
+                if (menu.Header.Equals((sender as MenuItem).Header))
+                    menu.IsChecked = true;
+                else
+                    menu.IsChecked = false;
+            }
+        }
         private void MenuSetting_Click(object sender, RoutedEventArgs e)
         {
             //TODO: click on menu setting
@@ -74,4 +85,4 @@ namespace SerialPortCommander
         }
         #endregion
     }
-} 
+}
