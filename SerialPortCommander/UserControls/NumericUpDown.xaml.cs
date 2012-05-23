@@ -19,6 +19,7 @@ namespace SerialPortCommander
     /// </summary>
     public partial class NumericUpDown : UserControl
     {
+        #region Properties
         /// <summary>
         /// Gets or sets value to display.
         /// </summary>
@@ -62,42 +63,14 @@ namespace SerialPortCommander
             "MaxValue",
             typeof(Int32),
             typeof(NumericUpDown));
+        #endregion
 
         public NumericUpDown()
         {
             InitializeComponent();
-            //txtNum.Text = this.Value.ToString();
         }
 
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        public virtual void OnPropertyChanged(string propertyName)
-        {
-            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
-            if ((handler != null))
-            {
-                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-                switch (propertyName)
-                {
-                    case "Value":
-                        //ValueChanged();
-                        break;
-                }
-            }
-        }
-        private void cmdUp_Click(object sender, RoutedEventArgs e)
-        {
-            this.Value++;
-            System.Diagnostics.Debug.WriteLine(this.Value);
-            ValueChanged();
-            //this.Value = Math.Min(this.Value, this.MaxValue);
-        }
-        private void cmdDown_Click(object sender, RoutedEventArgs e)
-        {
-            this.Value--;
-            System.Diagnostics.Debug.WriteLine(this.Value);
-            ValueChanged();
-            //this.Value = Math.Max(this.Value, this.MinValue);
-        }
+        #region Events and Functions
         private void ValueChanged()
         {
             if (this.Value > this.MaxValue)
@@ -105,12 +78,59 @@ namespace SerialPortCommander
             else if (this.Value < this.MinValue)
                 this.Value = this.MinValue;
         }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+        private void cmdUp_Click(object sender, RoutedEventArgs e)
+        {
+            this.Value++;
+            ValueChanged();
+        }
+        private void cmdDown_Click(object sender, RoutedEventArgs e)
+        {
+            this.Value--;
+            ValueChanged();
+        }
         private void txtNum_TextChanged(object sender, TextChangedEventArgs e)
         {
             Int32 value = 0;
             if (Int32.TryParse(txtNum.Text, out value))
                 this.Value = value;
-            //ValueChanged();
         }
+        #endregion
+    }
+    /// <summary>
+    /// Calculate a correct width for TextBox size to display.
+    /// </summary>
+    public class GetNumericUpDownWidth : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int)
+            {
+                return (int)value - 20;
+            }
+            else if (value is Int32)
+            {
+                return (Int32)value - 20;
+            }
+            else if (value is double)
+            {
+                return (double)value - 20;
+            }
+
+            return null;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

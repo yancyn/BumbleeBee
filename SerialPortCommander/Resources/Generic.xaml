@@ -111,7 +111,7 @@
     <s:BackgroundConverter x:Key="BackgroundConverter"/>
     <s:LayoutSelector x:Key="LayoutSelector"/>
     <DataTemplate x:Key="TextTemplate">
-        <WrapPanel>
+        <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
                      Style="{StaticResource RedTextToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
@@ -127,9 +127,9 @@
         </WrapPanel>
     </DataTemplate>
     <DataTemplate x:Key="IntegerTemplate">
-        <WrapPanel>
+        <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
-            <s:NumericUpDown MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}" Margin="0,0,4,0"
+            <s:NumericUpDown Width="80" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}" Margin="0,0,4,0"
                              Value="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
                              Style="{StaticResource RedNumberToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
@@ -138,7 +138,7 @@
     
     <s:HexConverter x:Key="HexConverter"/>
     <DataTemplate x:Key="HexTemplate">
-        <WrapPanel>
+        <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBlock Text="0x"/>
             <TextBox Style="{StaticResource RedTextToolTip}" Width="60" TextAlignment="Right"
@@ -162,7 +162,7 @@
     </DataTemplate>
     
     <DataTemplate x:Key="OptionsTemplate">
-        <WrapPanel>
+        <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
             <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
                       SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -173,7 +173,7 @@
     <s:RadioSelector x:Key="RadioSelector"/>
     <s:GetNameConverter x:Key="GetNameConverter"/>
     <DataTemplate x:Key="RadioTemplate">
-        <WrapPanel>
+        <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <RadioButton GroupName="{Binding Name}"
                 Content="{Binding ParameterOptions[0],Converter={StaticResource GetNameConverter}}"

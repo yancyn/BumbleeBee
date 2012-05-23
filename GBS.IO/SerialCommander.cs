@@ -501,15 +501,17 @@ namespace GBS.IO
         /// <param name="commander"></param>
         private void Copy(SerialCommander commander)
         {
-            //this.nameField = commander.Name;
+            if (commander.CommandGroups.Count != this.CommandGroups.Count) return;
             for (int i = 0; i < commander.CommandGroups.Count; i++)
             {
+                if (commander.CommandGroups[i].Commands.Count != this.CommandGroups[i].Commands.Count) break;
                 for (int j = 0; j < commander.CommandGroups[i].Commands.Count; j++)
                     this.CommandGroups[i].Commands[j].ParameterValue = commander.CommandGroups[i].Commands[j].ParameterValue;
             }
         }
         /// <summary>
         /// Import setting ready for apply.
+        /// TODO: make sure it is a same parameter set.
         /// </summary>
         public void ImportSetting(string fileName)
         {
