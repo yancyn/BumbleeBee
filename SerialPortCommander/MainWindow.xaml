@@ -48,14 +48,16 @@
             </MenuItem>
             <MenuItem Header="_Edit"/>
             <MenuItem Header="_Action">
-                <MenuItem Header="_Connect" Command="{Binding ConnectPortCommand}">
+                <MenuItem Header="_Connect" Command="{Binding ConnectPortCommand}"
+                          IsEnabled="{Binding Manager.IsOpen,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TrueToDisable}}">
                     <MenuItem.Icon>
-                        <Image Source="Resources/connect.png"/>
+                        <Image Source="Resources/connect.png" Style="{StaticResource ImageButtonStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Disconnect" Command="{Binding StopPortCommand}">
+                <MenuItem Header="_Disconnect" Command="{Binding StopPortCommand}"
+                          IsEnabled="{Binding Manager.IsOpen,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TrueToEnable}}">
                     <MenuItem.Icon>
-                        <Image Source="Resources/disconnect.png"/>
+                        <Image Source="Resources/disconnect.png" Style="{StaticResource ImageButtonStyle}"/>
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>

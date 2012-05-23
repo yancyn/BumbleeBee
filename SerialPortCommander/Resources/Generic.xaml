@@ -111,10 +111,10 @@
     </LinearGradientBrush>
     <Style x:Key="ImageButtonStyle" TargetType="{x:Type Image}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}" Value="True">
+            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type FrameworkElement}}}" Value="True">
                 <Setter Property="OpacityMask" Value="{x:Null}"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}" Value="False">
+            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type FrameworkElement}}}" Value="False">
                 <Setter Property="OpacityMask" Value="{StaticResource InActive}"/>
             </DataTrigger>
         </Style.Triggers>
