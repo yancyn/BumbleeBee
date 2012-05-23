@@ -67,7 +67,7 @@
     <Style x:Key="TwoComboBox" BasedOn="{StaticResource {x:Type RadioButton}}" TargetType="{x:Type ComboBox}">
 
     </Style>
-    <Style x:Key="RedTextToolTip" TargetType="{x:Type TextBox}">
+    <Style x:Key="RedToolTip" TargetType="{x:Type FrameworkElement}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,2,0,2" />
         <Setter Property="Validation.ErrorTemplate">
@@ -128,7 +128,7 @@
         <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBox Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                     Style="{StaticResource RedTextToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
                      Width="80" TextAlignment="Right">
                 <TextBox.Background>
                     <MultiBinding Converter="{StaticResource BackgroundConverter}">
@@ -145,7 +145,7 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <s:NumericUpDown Width="80" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}" Margin="0,0,4,0"
                              Value="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                             Style="{StaticResource RedNumberToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
+                             Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"/>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
@@ -156,7 +156,7 @@
         <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBlock Text="0x"/>
-            <TextBox Style="{StaticResource RedTextToolTip}" Width="60" TextAlignment="Right"
+            <TextBox Style="{StaticResource RedToolTip}" Width="60" TextAlignment="Right"
                      ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <MultiBinding Converter="{StaticResource HexConverter}">

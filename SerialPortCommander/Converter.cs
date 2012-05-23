@@ -84,10 +84,15 @@ namespace SerialPortCommander
                 SerialCommand command = (SerialCommand)values[1];
 
                 string output = string.Empty;
-                if (System.Convert.ToInt32(command.MaxValue) == -1)
-                    output = String.Format("0x{0:x8}", target);
-                else
+                if (command == null)
                     output = String.Format("0x{0:x4}", target);
+                else
+                {
+                    if (System.Convert.ToInt32(command.MaxValue) == -1)
+                        output = String.Format("0x{0:x8}", target);
+                    else
+                        output = String.Format("0x{0:x4}", target);
+                }
 
                 output = output.Replace("0x", "");
                 return output.ToUpper();
@@ -100,7 +105,15 @@ namespace SerialPortCommander
         {
             object[] outputs = new object[2];
             if (value is string)
-                outputs[0] = System.Convert.ToInt64(value.ToString().ToLower(), 16);
+            {
+                Int64 output = 0;
+                Int64.TryParse(value.ToString().ToLower(), out output);
+                if (value.ToString().ToLower().Equals(String.Format("0x{0:x4}", 0))
+                    || value.ToString().ToLower().Equals(String.Format("0x{0:x8}", 0)))
+                    outputs[0] = 0;
+                else
+                    outputs[0] = value;//output;// System.Convert.ToInt64(value.ToString().ToLower(), 16);
+            }
 
             return outputs;
         }

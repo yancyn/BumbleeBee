@@ -194,10 +194,8 @@ namespace GBS.IO
                                     max = Convert.ToInt32(this.maxValueField);
                                     if (max == -1)
                                     {
-                                        //Int64 bigValue = 0;
-                                        //Int64.TryParse(parameterValueField.ToString(), out bigValue);
-                                        //TODO: if (!IsHexString(bigValue, 8))
-                                        //    this.errorField = "Value must between 0x00000000 and 0xFFFFFFFF";
+                                        if (!IsHexString("0x" + parameterValueField.ToString().ToLower(), 8))
+                                            this.errorField = "Value must between 0x00000000 and 0xFFFFFFFF";
                                     }
                                     else
                                     {

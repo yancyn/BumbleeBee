@@ -25,7 +25,12 @@ namespace SerialPortCommander
         /// </summary>
         public Int32 Value
         {
-            get { return Convert.ToInt32(GetValue(ValueProperty)); }
+            get
+            {
+                Int32 value = 0;
+                Int32.TryParse(GetValue(ValueProperty).ToString(), out value);
+                return value;
+            }
             set
             {
                 SetValue(ValueProperty, value);
