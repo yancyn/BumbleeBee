@@ -163,7 +163,7 @@
                 <TabItem Header="Upgrade" Name="tabItem2">
                     <DockPanel LastChildFill="True">
                         <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-                            <Button>Apply</Button>
+                            <Button Command="{Binding UpgradeCommand}" CommandParameter="{Binding ElementName=pathText,Path=Text}">Apply</Button>
                         </WrapPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>

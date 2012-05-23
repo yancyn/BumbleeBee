@@ -62,6 +62,9 @@ namespace GBS.IO
         private LoadModeCommand loadModeCommand;
         public LoadModeCommand LoadModeCommand { get { return this.loadModeCommand; } }
 
+        private UpgradeCommand upgradeCommand;
+        public UpgradeCommand UpgradeCommand { get { return this.upgradeCommand; } }
+
         private ClearOutputCommand clearOutputCommand;
         public ClearOutputCommand ClearOutputCommand { get { return this.clearOutputCommand; } }
         #endregion
@@ -252,6 +255,7 @@ namespace GBS.IO
             this.exportCommand = new ExportCommand(this);
             this.importCommand = new ImportCommand(this);
             this.loadModeCommand = new LoadModeCommand(this);
+            this.upgradeCommand = new UpgradeCommand(this);
             this.clearOutputCommand = new ClearOutputCommand(this);
 
             //threadStart = new ThreadStart(ProcessQueue);
@@ -395,6 +399,39 @@ namespace GBS.IO
         {
             SetMessage("Export setting to file...");
             SaveToFile(fileName);
+        }
+        public bool Upgrade(string fileName)
+        {
+            SetMessage("Upgrading firmware...");
+            SerialCommand command = new SerialCommand("Upgrading firmware", ParameterType.String);
+            command.GroupId = "05";
+            command.ParameterId = "00";
+            command.ParameterValue = 0;
+            command.SetEnquiring(true);
+
+            try
+            {
+                Write(command);
+                Thread.Sleep(2000);
+                this.manager.Write("1");
+                //Disconnect();
+
+                //LegacyCommunication ymodem = new LegacyCommunication(manager.CurrentSerialSettings.PortName);
+                //ymodem.SendBinaryFile(fileName);
+                //Thread.Sleep(8000);
+
+                //Connect();
+                //this.manager.Write("2");
+
+                command.ResetState();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(typeof(SerialCommander), ex);
+                SetMessage(ex.Message);
+                return false;
+            }
         }
         /// <summary>
         /// Clear all output message to debug window in interface.
@@ -704,7 +741,24 @@ namespace GBS.IO
         }
         #endregion
     }
+    public class UpgradeCommand : ICommand
+    {
+        private SerialCommander manager;
+        public UpgradeCommand(SerialCommander manager)
+        {
+            this.manager = manager;
+        }
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+        public event EventHandler CanExecuteChanged;
 
+        public void Execute(object parameter)
+        {
+            this.manager.Upgrade(parameter.ToString());
+        }
+    }
     public class ClearOutputCommand : ICommand
     {
         private SerialCommander manager;

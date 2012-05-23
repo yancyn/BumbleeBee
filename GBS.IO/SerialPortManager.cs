@@ -147,7 +147,6 @@ namespace GBS.IO
         {
             _serialPort.Write(text);
         }
-
         // Call to release serial port
         public void Dispose()
         {
