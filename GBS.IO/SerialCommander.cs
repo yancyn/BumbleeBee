@@ -209,6 +209,8 @@ namespace GBS.IO
                                         OnPropertyChanged("ParameterValue");
                                         break;
                                     }
+                                    //else
+                                    //    command.SetFail();
                                 }
                             }
                         }
@@ -219,6 +221,8 @@ namespace GBS.IO
 
                 this.outputsField.RemoveAt(0);
             }
+
+            //OnPropertyChanged("Success");
         }
         #endregion
 
@@ -307,7 +311,7 @@ namespace GBS.IO
                 {
                     if (command.HasChanged)
                     {
-                        SetMessage(string.Format("applying {0}:{1}", command.Name, command.ParameterValue));
+                        SetMessage(string.Format("applying {0}: {1}", command.Name, command.ParameterValue));
                         command.SetEnquiring(true);
 
                         try
@@ -453,6 +457,13 @@ namespace GBS.IO
         private void Clone(SerialCommander commander)
         {
             this.nameField = commander.Name;
+
+            this.codeplugField = string.Empty;
+            OnPropertyChanged("CodePlug");
+
+            this.firmwareField = string.Empty;
+            OnPropertyChanged("FirmWare");
+
             this.commandGroupsField.Clear();
             foreach (ParameterGroup group in commander.CommandGroups)
             {

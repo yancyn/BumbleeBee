@@ -149,7 +149,7 @@ namespace GBS.IO
         {
             System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to fail");
             this.successField = false;
-            OnPropertyChanged("Success");
+            //todo: OnPropertyChanged("Success");
         }
         public void SetError(string message)
         {
@@ -164,7 +164,6 @@ namespace GBS.IO
         {
             get { return this.errorField; }
         }
-        //TODO: IDataErrorInfo
         [XmlIgnore]
         public string this[string columnName]
         {
