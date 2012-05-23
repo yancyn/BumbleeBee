@@ -438,9 +438,9 @@ namespace GBS.IO
             command.Enquiring = true;
 
             string data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, command.ParameterValue.ToString());
-            if (command.ParameterValue is KeyValuePair<Int32, String>)
+            if (command.ParameterValue is KeyValuePair<int,string>)
             {
-                KeyValuePair<Int32, String> hold = (KeyValuePair<Int32, String>)command.ParameterValue;
+                KeyValuePair<int,string> hold = (KeyValuePair<int,string>)command.ParameterValue;
                 data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, hold.Key);
             }
 

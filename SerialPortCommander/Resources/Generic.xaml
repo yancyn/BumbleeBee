@@ -183,11 +183,18 @@
         </WrapPanel>
     </DataTemplate>
     
+    <s:OptionConverter x:Key="OptionConverter"/>
     <DataTemplate x:Key="OptionsTemplate">
         <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
-            <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
-                      SelectedValue="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value">
+                <ComboBox.SelectedValue>
+                    <MultiBinding Converter="{StaticResource OptionConverter}">
+                        <Binding Path="ParameterOptions"/>
+                        <Binding Path="ParameterValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </ComboBox.SelectedValue>
+            </ComboBox>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>

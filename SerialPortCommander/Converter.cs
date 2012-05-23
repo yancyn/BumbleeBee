@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -195,5 +196,32 @@ namespace SerialPortCommander
             throw new NotImplementedException();
         }
         #endregion
+    }
+    /// <summary>
+    /// Converter of ParameterOptions.
+    /// </summary>
+    public class OptionConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<GBS.IO.KeyValuePair<int, string>> options = (List<GBS.IO.KeyValuePair<int, string>>)values[0];
+            int value = (int)values[1];
+            foreach (GBS.IO.KeyValuePair<int, string> option in options)
+            {
+                if (option.Key == value)
+                    return option;
+            }
+
+            throw new NotImplementedException();
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            GBS.IO.KeyValuePair<int, string> input = (GBS.IO.KeyValuePair<int, string>)value;
+            object[] values = new object[2];
+            values[0] = input;
+            values[1] = input.Key;
+
+            return values;
+        }
     }
 }

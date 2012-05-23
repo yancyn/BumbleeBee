@@ -49,9 +49,9 @@ namespace SerialPortCommander
             FrameworkElement element = container as FrameworkElement;
             if (element != null && item != null)
             {
-                if (item is GBS.IO.KeyValuePair<Int32, String>)
+                if (item is GBS.IO.KeyValuePair<int, string>)
                 {
-                    GBS.IO.KeyValuePair<Int32, String> pair = (GBS.IO.KeyValuePair<Int32, String>)item;
+                    GBS.IO.KeyValuePair<int, string> pair = (GBS.IO.KeyValuePair<int, string>)item;
                     if (pair.Key == 1)
                         return element.FindResource("PositiveRadioTemplate") as DataTemplate;
                     else
