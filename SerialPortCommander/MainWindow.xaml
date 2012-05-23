@@ -62,7 +62,7 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="De_vice">
-                    <MenuItem x:Name="menuModem" Header="PRX Modem" Command="{Binding LoadModeCommand}" CommandParameter="current.serial" Click="menuItem_Click"/>
+                    <MenuItem x:Name="menuModem" Header="PRX Modem" IsChecked="True" Command="{Binding LoadModeCommand}" CommandParameter="current.serial" Click="menuItem_Click"/>
                     <MenuItem x:Name="menuPager" Header="PRX Pager" Command="{Binding LoadModeCommand}" CommandParameter="current1.serial" Click="menuItem_Click"/>
                     <MenuItem x:Name="menuPTX" Header="PTX" Command="{Binding LoadModeCommand}" CommandParameter="current2.serial" Click="menuItem_Click"/>
                 </MenuItem>
