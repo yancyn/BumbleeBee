@@ -153,4 +153,34 @@ namespace SerialPortCommander
         }
         #endregion
     }
+    public class TrueToEnable : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool) return (bool)value;
+
+            throw new NotImplementedException();
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
+    public class TrueToDisable : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool) return !(bool)value;
+
+            throw new NotImplementedException();
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
 }

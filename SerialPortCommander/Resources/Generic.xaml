@@ -78,7 +78,7 @@
                             ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
                             <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White"/>
                         </Border>
-                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center">
                             <Border BorderBrush="Red" BorderThickness="1" />
                         </AdornedElementPlaceholder>
                     </DockPanel>
@@ -97,13 +97,27 @@
                             ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
                             <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White"/>
                         </Border>
-                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
+                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center">
                             <Border BorderBrush="Red" BorderThickness="1" />
                         </AdornedElementPlaceholder>
                     </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    <LinearGradientBrush x:Key="InActive" StartPoint="0,0" EndPoint="1,1" >
+        <GradientStop Offset="0.0" Color="#00000000" />
+        <GradientStop Offset="1.0" Color="#FF000000" />
+    </LinearGradientBrush>
+    <Style x:Key="ImageButtonStyle" TargetType="{x:Type Image}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}" Value="True">
+                <Setter Property="OpacityMask" Value="{x:Null}"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsEnabled,RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Button}}}" Value="False">
+                <Setter Property="OpacityMask" Value="{StaticResource InActive}"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
 
@@ -137,6 +151,7 @@
     </DataTemplate>
     
     <s:HexConverter x:Key="HexConverter"/>
+    <!-- TODO: convert into HexControl -->
     <DataTemplate x:Key="HexTemplate">
         <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>

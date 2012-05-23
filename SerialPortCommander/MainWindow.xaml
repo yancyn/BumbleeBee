@@ -6,7 +6,8 @@
         Title="BumbleBee Studio" Height="350" Width="525" Closing="Window_Closing">
     <Grid x:Name="MainGrid" DataContext="{Binding Path=.,UpdateSourceTrigger=PropertyChanged}">
         <Grid.Resources>
-            <!--<g:SerialPortManager x:Key="Manager"/>-->
+            <s:TrueToDisable x:Key="TrueToDisable"/>            
+            <s:TrueToEnable x:Key="TrueToEnable"/>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
@@ -89,11 +90,13 @@
 
         <WrapPanel Grid.Row="1">
             <ToolBar x:Name="Toolbar1" Grid.Column="0">
-                <Button x:Name="ButtonConnect" Command="{Binding ConnectPortCommand}" ToolTip="Connect">
-                    <Image Source="Resources\connect.png"/>
+                <Button x:Name="ButtonConnect" ToolTip="Connect" Command="{Binding ConnectPortCommand}"
+                    IsEnabled="{Binding Manager.IsOpen,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TrueToDisable}}">
+                    <Image Source="Resources\connect.png" Style="{StaticResource ImageButtonStyle}"/>
                 </Button>
-                <Button x:Name="ButtonDisconnect" Command="{Binding StopPortCommand}" ToolTip="Disconnect">
-                    <Image Source="Resources\disconnect.png"/>
+                <Button x:Name="ButtonDisconnect" ToolTip="Disconnect" Command="{Binding StopPortCommand}"
+                    IsEnabled="{Binding Manager.IsOpen,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TrueToEnable}}">
+                    <Image Source="Resources\disconnect.png" Style="{StaticResource ImageButtonStyle}"/>
                 </Button>
                 <Separator/>
                 <Button Click="MenuPrint_Click">

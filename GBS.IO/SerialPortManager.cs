@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace GBS.IO
     /// <summary>
     /// Manager for serial port data
     /// </summary>
-    public class SerialPortManager : IDisposable
+    public class SerialPortManager : IDisposable, INotifyPropertyChanged
     {
         #region Fields
         private SerialPort _serialPort;
@@ -103,6 +104,7 @@ namespace GBS.IO
             // Subscribe to event and open serial port for data
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(_serialPort_DataReceived);
             _serialPort.Open();
+            OnPropertyChanged("IsOpen");
         }
         /// <summary>
         /// Closes the serial port
@@ -113,6 +115,7 @@ namespace GBS.IO
             {
                 _serialPort.DataReceived -= new SerialDataReceivedEventHandler(_serialPort_DataReceived);
                 _serialPort.Close();
+                OnPropertyChanged("IsOpen");
             }
         }
         /// <summary>
@@ -206,6 +209,18 @@ namespace GBS.IO
             for (int i = 0; i < 20; i++)
                 ports[i] = "COM" + (i + 1).ToString();
             return ports;
+        }
+        #endregion
+
+        #region INotifyPropertyChanged Members
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            System.ComponentModel.PropertyChangedEventHandler handler = this.PropertyChanged;
+            if ((handler != null))
+            {
+                handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
         }
         #endregion
     }
