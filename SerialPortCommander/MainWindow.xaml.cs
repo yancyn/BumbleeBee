@@ -44,7 +44,33 @@ namespace SerialPortCommander
         #endregion
 
         #region Events
-        private void menuItem_Click(object sender, RoutedEventArgs e)
+        private void LoadFile_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.DefaultExt = ".serial";
+            dialog.Filter = "Serial setting (.serial)|*.serial";
+            if (dialog.ShowDialog() == true)
+                commander.ImportSetting(dialog.FileName);
+        }
+        private void SaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.DefaultExt = ".serial";
+            dialog.Filter = "Serial setting (.serial)|*.serial";
+            if (dialog.ShowDialog() == true)
+                commander.ExportSetting(dialog.FileName);
+        }
+        private void Browse_Click(object sender, RoutedEventArgs e)
+        {
+            //open up file dialog
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.DefaultExt = ".bin";
+            dialog.Filter = "Binary (.bin)|*.bin";
+            if (dialog.ShowDialog() == true)
+                pathText.Text = dialog.FileName;
+        }
+
+        private void ModeMenu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
             foreach (MenuItem menu in menus)

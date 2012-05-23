@@ -380,6 +380,7 @@ namespace GBS.IO
         public void LoadSetting(string fileName)
         {
             SetMessage("Load setting from " + fileName + "...");
+            fileName = AppDomain.CurrentDomain.BaseDirectory + fileName;
             if (File.Exists(fileName))
             {
                 SerialCommander commander = LoadFromFile(fileName);
