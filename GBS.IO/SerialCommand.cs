@@ -127,34 +127,33 @@ namespace GBS.IO
         public void ResetState()
         {
             this.hasChanged = false;
-            OnPropertyChanged("HasChanged");
         }
         public void SetEnquiring(bool inquired)
         {
             this.enquiringField = inquired;
             OnPropertyChanged("Enquiring");
+
+            this.successField = false;
+            OnPropertyChanged("Success");
         }
         public void SetSuccess()
         {
-            System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to success");
-
-            this.successField = true;
-            this.enquiringField = false;//reset
+            this.successField |= true;
+            System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to " + this.successField);
             OnPropertyChanged("Success");
 
+            //reset
+            this.enquiringField = false;
             this.hasChanged = false;
-            OnPropertyChanged("HasChanged");
         }
-        public void SetFail()
-        {
-            System.Diagnostics.Debug.WriteLine("Set " + this.nameField + " to fail");
-            this.successField = false;
-            //todo: OnPropertyChanged("Success");
-        }
+        /// <summary>
+        /// TODO: fail to set error message on orange background
+        /// </summary>
+        /// <param name="message"></param>
         public void SetError(string message)
         {
             this.errorField = message;
-            OnPropertyChanged("Success");
+            OnPropertyChanged("Error");
         }
         #endregion
 

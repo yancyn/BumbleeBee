@@ -21,6 +21,7 @@
         </Grid.RowDefinitions>
 
         <TextBox Grid.RowSpan="2" x:Name="txtNum" x:FieldModifier="private" TextChanged="txtNum_TextChanged"
+                 Background="{Binding ElementName=numericUpDown,Path=Background}"
                  Width="{Binding ElementName=numericUpDown,Path=Width,Converter={StaticResource GetNumericUpDownWidth}}"
                  Text="{Binding ElementName=numericUpDown,Path=Value}"/>
         <Button Grid.Row="0" Grid.Column="1" x:Name="cmdUp" Margin="0,0,0,-4" Style="{StaticResource UpButton}" Click="cmdUp_Click" />

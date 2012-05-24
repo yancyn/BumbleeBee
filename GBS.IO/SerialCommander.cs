@@ -99,30 +99,16 @@ namespace GBS.IO
         void manager_NewSerialDataRecieved(object sender, SerialDataEventArgs e)
         {
             string output = Encoding.ASCII.GetString(e.Data);
-            this.outputsField.Add(output);
-            this.outputField += output;// +"\n";
-            OnPropertyChanged("Output");
 
             //retrieve scenario
             if (output.Contains("REPLY"))
-            {
-                //System.Diagnostics.Debug.WriteLine("#" + output + "#");
-            }
+                this.outputsField.Add(output);
 
-            if (isWriting)
-            {
-                #region Writing case
-                #endregion
-            }
-            else
-            {
-                #region Reading data from serial port
-                //ProcessQueue(output);
-                #endregion
-            }
+            this.outputField += output;// +"\n"; original output already contains feed line.
+            OnPropertyChanged("Output");
         }
         /// <summary>
-        /// todo: refactor code
+        /// todo: refactor outputs_CollectionChanged
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -210,8 +196,6 @@ namespace GBS.IO
                                         OnPropertyChanged("ParameterValue");
                                         break;
                                     }
-                                    //else
-                                    //    command.SetFail();
                                 }
                             }
                         }
@@ -326,10 +310,10 @@ namespace GBS.IO
                             SetMessage(ex.Message);
                             break;
                         }
-                    }
 
-                    command.ResetState();
-                    Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
+                        command.ResetState();
+                        Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
+                    }
                 }
             }
         }
@@ -395,7 +379,7 @@ namespace GBS.IO
         /// </summary>
         public void ExportSetting(string fileName)
         {
-            SetMessage("Export setting to file...");
+            SetMessage("Export setting to file.");
             SaveToFile(fileName);
         }
         /// <summary>

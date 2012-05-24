@@ -123,7 +123,7 @@ namespace SerialPortCommander
         #endregion
     }
     /// <summary>
-    /// False to set background as red otherwise default background color.
+    /// False to set background as gold otherwise default background color.
     /// </summary>
     public class BackgroundConverter : IMultiValueConverter
     {
@@ -132,14 +132,14 @@ namespace SerialPortCommander
         {
             bool success = (bool)values[0];
             GBS.IO.SerialCommand command = (GBS.IO.SerialCommand)values[1];
-            if (command.Enquiring)
-            {
+            //if (command.Enquiring)
+            //{
                 if (!command.Success)
                 {
                     command.SetError("Fail to read or write");
-                    return System.Windows.Media.Brushes.Red;
+                    return System.Windows.Media.Brushes.Gold;
                 }
-            }
+            //}
 
             return null;
         }
@@ -208,20 +208,32 @@ namespace SerialPortCommander
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             List<GBS.IO.KeyValuePair<int, string>> options = (List<GBS.IO.KeyValuePair<int, string>>)values[0];
-            int value = (int)values[1];
-            foreach (GBS.IO.KeyValuePair<int, string> option in options)
+            if (values[1] is GBS.IO.KeyValuePair<int, string>)
             {
-                if (option.Key == value)
-                    return option;
+                GBS.IO.KeyValuePair<int, string> pair = (GBS.IO.KeyValuePair<int, string>)values[1];
+                return pair;
+            }
+            else
+            {
+                int value = 0;
+                if (values[1] is int)
+                    value = (int)values[1];
+
+                foreach (GBS.IO.KeyValuePair<int, string> option in options)
+                {
+                    if (option.Key == value)
+                        return option;
+                }
             }
 
-            throw new NotImplementedException();
+            //todo: OptionConverter write error into log
+            return null;
         }
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             GBS.IO.KeyValuePair<int, string> input = (GBS.IO.KeyValuePair<int, string>)value;
             object[] values = new object[2];
-            values[0] = input;
+            values[0] = new List<GBS.IO.KeyValuePair<int, string>> { input };
             values[1] = input.Key;
 
             return values;

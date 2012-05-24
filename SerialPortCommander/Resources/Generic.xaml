@@ -194,6 +194,12 @@
                         <Binding Path="ParameterValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                     </MultiBinding>
                 </ComboBox.SelectedValue>
+                <ComboBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </ComboBox.Background>
             </ComboBox>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
@@ -207,11 +213,25 @@
             <RadioButton GroupName="{Binding Name}"
                 Content="{Binding ParameterOptions[0],Converter={StaticResource GetNameConverter}}"
                 IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},
-                    ConverterParameter=0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    ConverterParameter=0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <RadioButton.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </RadioButton.Background>
+            </RadioButton>
             <RadioButton GroupName="{Binding Name}"
                 Content="{Binding ParameterOptions[1],Converter={StaticResource GetNameConverter}}"
                 IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},
-                    ConverterParameter=1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                    ConverterParameter=1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <RadioButton.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </RadioButton.Background>
+            </RadioButton>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
