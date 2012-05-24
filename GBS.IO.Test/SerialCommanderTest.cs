@@ -1,6 +1,7 @@
 ﻿using GBS.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 namespace GBS.IO.Test
@@ -436,6 +437,21 @@ namespace GBS.IO.Test
         {
             YModem ymodem = new YModem("COM3");
             ymodem.SendBinaryFile(@"C:\Users\yeang-shing.then\Desktop\cut.svg.plt");
+        }
+
+        [TestMethod()]
+        public void OutputsCollectionChangedTest()
+        {
+            int counter = 0;
+            ObservableCollection<string> targets = new ObservableCollection<string> { "a", "b", "c", "d", "e", "f" };
+            while (targets.Count > 0)
+            {
+                counter++;
+                System.Diagnostics.Debug.WriteLine(counter);
+                targets.RemoveAt(0);
+            }
+
+            System.Diagnostics.Debug.WriteLine("total loops:" + counter);
         }
     }
 }

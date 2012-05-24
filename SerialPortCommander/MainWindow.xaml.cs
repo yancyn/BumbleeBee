@@ -35,11 +35,51 @@ namespace SerialPortCommander
         /// </summary>
         private void Initialize()
         {
-            this.Title = Properties.Settings.Default.Company + " Studio";
+            this.Title = Properties.Settings.Default.Company + " Studio" + " ver " + GetAssemblyVersion("SerialPortCommander.exe", 3);
             commander = new SerialCommander("BumbleBee");
-            //commander.ImportSetting("current.serial");
             commander.LoadSetting();
             MainGrid.DataContext = commander;
+        }
+        public string GetAssemblyVersion(string assemblyName, int digit)
+        {
+            string lVersion = "";
+            assemblyName = assemblyName.Trim().ToUpper();
+            if (digit > 4) digit = 4;//maximum
+
+            try
+            {
+                System.Reflection.Assembly[] lAssemblies = System.Threading.Thread.GetDomain().GetAssemblies();
+                foreach (System.Reflection.Assembly ass in lAssemblies)
+                {
+                    if (ass.GetType() == typeof(System.Reflection.Assembly)
+                        && ass.CodeBase.ToUpper().LastIndexOf(assemblyName) > -1)
+                    {
+                        string[] lSplits = ass.FullName.Split(' ');
+                        foreach (string s in lSplits)
+                        {
+                            if (s.Trim(',').ToLower().IndexOf("version") > -1)
+                            {
+                                string[] lVers = s.Trim(',').Split('=');
+                                lVersion = lVers[lVers.Length - 1];
+                                if (digit < 4) //only less than 4 digit
+                                {
+                                    lVers = lVersion.Split('.');
+                                    lVersion = "";//reset
+                                    for (int i = 0; i < digit; i++)
+                                        lVersion += lVers[i] + ".";
+                                }
+                            }
+                        }
+                    }//found specified dll only
+                }//end loops
+
+                return lVersion.TrimEnd('.');
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(typeof(MainWindow), ex);
+                return string.Empty;
+            }
         }
         #endregion
 

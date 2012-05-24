@@ -22,13 +22,13 @@
         <Setter Property="Width" Value="200"/>
         <Setter Property="TextAlignment" Value="Right"/>
     </Style>
-    
+
     <!-- For unit label use after input-->
     <Style x:Key="Suffix" TargetType="{x:Type TextBlock}">
         <Setter Property="Width" Value="20"/>
         <Setter Property="TextAlignment" Value="Left"/>
     </Style>
-    
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="4"/>
         <Setter Property="Width" Value="60"/>
@@ -68,25 +68,6 @@
 
     </Style>
     <Style x:Key="RedToolTip" TargetType="{x:Type FrameworkElement}">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="0,2,0,2" />
-        <Setter Property="Validation.ErrorTemplate">
-            <Setter.Value>
-                <ControlTemplate>
-                    <DockPanel LastChildFill="true">
-                        <Border Background="Red" DockPanel.Dock="Right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
-                            ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
-                            <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" Foreground="White"/>
-                        </Border>
-                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center">
-                            <Border BorderBrush="Red" BorderThickness="1" />
-                        </AdornedElementPlaceholder>
-                    </DockPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    <Style x:Key="RedNumberToolTip" TargetType="{x:Type s:NumericUpDown}">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0,2,0,2" />
         <Setter Property="Validation.ErrorTemplate">
@@ -156,7 +137,7 @@
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
-    
+
     <s:HexConverter x:Key="HexConverter"/>
     <!-- TODO: convert into HexControl -->
     <DataTemplate x:Key="HexTemplate">
@@ -182,11 +163,11 @@
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
-    
+
     <s:OptionConverter x:Key="OptionConverter"/>
     <DataTemplate x:Key="OptionsTemplate">
         <WrapPanel Margin="0,4">
-            <TextBlock Text="{Binding Path=Name}" ToolTip="{Binding Path=ParameterValue}" Style="{StaticResource Labeling}"/>
+            <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value">
                 <ComboBox.SelectedValue>
                     <MultiBinding Converter="{StaticResource OptionConverter}">
@@ -234,19 +215,5 @@
             </RadioButton>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
-    </DataTemplate>
-    
-    <!-- deprecated -->
-    <DataTemplate x:Key="PositiveRadioTemplate">
-        <RadioButton Content="{Binding Value}" GroupName="{Binding Value}"
-            IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
-            Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=1,
-            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-    </DataTemplate>
-    <DataTemplate x:Key="NegativeRadioTemplate">
-        <RadioButton Content="{Binding Value}" GroupName="{Binding Value}"
-            IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}},
-            Path=DataContext.ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=0,
-            Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
     </DataTemplate>
 </ResourceDictionary>

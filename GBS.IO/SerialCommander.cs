@@ -18,6 +18,11 @@ namespace GBS.IO
         /// </summary>
         const int ONE_MOMENT = 1000;
         /// <summary>
+        /// Maximum try on reading to com port
+        /// to prevent hardware overload.
+        /// </summary>
+        const int MAX_TRY = 50;
+        /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
         /// True it is writing data into serial port otherwise it is just retrieving value. 
         /// </summary>
@@ -28,12 +33,6 @@ namespace GBS.IO
         /// Default configuration file to lookup at application directory.
         /// </summary>
         protected const string DEFAULT_FILENAME = "current.serial";
-
-        /// <summary>
-        /// Current serial command sending to serial port.
-        /// TODO: check whether still available.
-        /// </summary>
-        private SerialCommand currentCommand;
         #endregion
 
         #region Properties
@@ -103,6 +102,8 @@ namespace GBS.IO
             //retrieve scenario
             if (output.Contains("REPLY"))
                 this.outputsField.Add(output);
+            //Match match = Regex.Match(output, @"REPLY\(\d{0,2}, \d{0,2}\): .*\r");
+            //if (match.Success) this.outputsField.Add(output);
 
             this.outputField += output;// +"\n"; original output already contains feed line.
             OnPropertyChanged("Output");
@@ -114,94 +115,96 @@ namespace GBS.IO
         /// <param name="e"></param>
         void outputs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            //this.outputField += "outputs_CollectionChanged" + "\n";
+            //OnPropertyChanged("Output");
+            System.Diagnostics.Debug.WriteLine("outputs_CollectionChanged");
             while (this.outputsField.Count > 0)
             {
-                System.Diagnostics.Debug.WriteLine("outputs_CollectionChanged");
+                //this.outputField += this.outputsField.Count + "\n";
+                //OnPropertyChanged("Output");
+
                 string output = this.outputsField[0];
                 string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string line in lines)
                 {
                     Match match = Regex.Match(line, @"REPLY\(\d{0,2}, \d{0,2}\): .*\r");
+                    if (!match.Success) continue;
+
+                    string[] hold = new string[3];
+                    MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
+                    if (matches.Count < 2) continue;
+
+                    hold[0] = matches[0].Groups[0].Value;
+                    hold[1] = matches[1].Groups[0].Value;
+                    match = Regex.Match(line, @": .*");
                     if (match.Success)
                     {
-                        string[] hold = new string[3];
-                        MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
-                        if (matches.Count > 1)
+                        hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
+                        hold[2] = hold[2].Trim();
+                    }
+
+                    bool found = false;
+                    #region Lookup correct command
+                    if (this.firmwareField.Length == 0)
+                    {
+                        if (hold[0].Equals("05") && hold[1].Equals("02"))
                         {
-                            //for (int i = 0; i < Math.Min(2, matches.Count); i++)
-                            hold[0] = matches[0].Groups[0].Value;
-                            hold[1] = matches[1].Groups[0].Value;
-
-                            match = Regex.Match(line, @": .*");
-                            if (match.Success)
+                            this.firmwareField = hold[2];
+                            OnPropertyChanged("Firmware");
+                        }
+                    }
+                    if (this.codeplugField.Length == 0)
+                    {
+                        if (hold[0].Equals("05") && hold[1].Equals("03"))
+                        {
+                            this.codeplugField = hold[2];
+                            OnPropertyChanged("Codeplug");
+                        }
+                    }
+                    foreach (ParameterGroup group in this.commandGroupsField)
+                    {
+                        if (found) break;
+                        foreach (SerialCommand command in group.Commands)
+                        {
+                            if (command.GroupId.Equals(hold[0]) && command.ParameterId.Equals(hold[1]))
                             {
-                                hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
-                                hold[2] = hold[2].Trim();
-                            }
-
-
-                            if (this.firmwareField.Length == 0)
-                            {
-                                if (hold[0].Equals("05") && hold[1].Equals("02"))
+                                switch (command.ParameterType)
                                 {
-                                    this.firmwareField = hold[2];
-                                    OnPropertyChanged("Firmware");
-                                }
-                            }
-                            if (this.codeplugField.Length == 0)
-                            {
-                                if (hold[0].Equals("05") && hold[1].Equals("03"))
-                                {
-                                    this.codeplugField = hold[2];
-                                    OnPropertyChanged("Codeplug");
-                                }
-                            }
-
-                            foreach (ParameterGroup group in this.commandGroupsField)
-                            {
-                                foreach (SerialCommand command in group.Commands)
-                                {
-                                    if (command.GroupId.Equals(hold[0]) && command.ParameterId.Equals(hold[1]))
-                                    {
-                                        switch (command.ParameterType)
+                                    case ParameterType.Integer:
+                                        int result = 0;
+                                        if (hold[2].ToString() == "0")
                                         {
-                                            case ParameterType.Integer:
-                                                int result = 0;
-                                                if (hold[2].ToString() == "0")
-                                                {
-                                                    command.ParameterValue = 0;
-                                                    command.SetSuccess();
-                                                }
-                                                else
-                                                {
-                                                    Int32.TryParse(hold[2].ToString(), out result);
-                                                    if (result > 0)
-                                                    {
-                                                        command.ParameterValue = result;
-                                                        command.SetSuccess();
-                                                    }
-                                                }
-                                                break;
-                                            case ParameterType.String:
-                                                command.ParameterValue = hold[2].ToString();
-                                                command.SetSuccess();
-                                                break;
-                                            case ParameterType.Hex:
-                                                //from 0xFFFF convert back to 65535
-                                                command.ParameterValue = System.Convert.ToInt32(hold[2].ToString().ToLower(), 16);
-                                                command.SetSuccess();
-                                                break;
+                                            command.ParameterValue = 0;
+                                            command.SetSuccess();
                                         }
-
-                                        OnPropertyChanged("ParameterValue");
+                                        else
+                                        {
+                                            Int32.TryParse(hold[2].ToString(), out result);
+                                            if (result > 0)
+                                            {
+                                                command.ParameterValue = result;
+                                                command.SetSuccess();
+                                            }
+                                        }
                                         break;
-                                    }
+                                    case ParameterType.String:
+                                        command.ParameterValue = hold[2].ToString();
+                                        command.SetSuccess();
+                                        break;
+                                    case ParameterType.Hex:
+                                        //from 0xFFFF convert back to 65535
+                                        command.ParameterValue = System.Convert.ToInt32(hold[2].ToString().ToLower(), 16);
+                                        command.SetSuccess();
+                                        break;
                                 }
+
+                                OnPropertyChanged("ParameterValue");
+                                found = true;
+                                break;
                             }
                         }
-
-                        break;
                     }
+                    #endregion
                 }
 
                 this.outputsField.RemoveAt(0);
@@ -324,7 +327,7 @@ namespace GBS.IO
         {
             this.isWriting = false;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++) //MAX_TRY
             {
                 //get version
                 if (this.firmwareField.Length == 0)
@@ -344,14 +347,21 @@ namespace GBS.IO
                     command.ParameterId = "03";
                     Read(command);
                 }
+            }
 
-                //get all the command
-                foreach (ParameterGroup group in this.commandGroupsField)
+            //get all the commands
+            foreach (ParameterGroup group in this.commandGroupsField)
+            {
+                foreach (SerialCommand cmd in group.Commands)
                 {
-                    foreach (SerialCommand cmd in group.Commands)
+                    //int counter = 0;
+                    while (!cmd.Success)
                     {
+                        //counter++;
+                        //if (counter > MAX_TRY) break;
                         SetMessage("Reading " + cmd.Name + "...");
                         Read(cmd);
+                        //Thread.Sleep(100);
                     }
                 }
             }
@@ -572,7 +582,7 @@ namespace GBS.IO
         private void SetMessage(string message)
         {
             this.messageField = message;
-            System.Diagnostics.Debug.WriteLine(this.messageField);
+            //System.Diagnostics.Debug.WriteLine(this.messageField);
             OnPropertyChanged("Message");
 
             //System.Threading.Thread.Sleep(5000);
