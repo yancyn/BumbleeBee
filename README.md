@@ -14,6 +14,7 @@ Useful Links
 - http://1.bp.blogspot.com/-0jCY9J1GZ9Q/TuBbMg9EDdI/AAAAAAAAAKE/CxEMpT186dA/s45/bumble-bee.gif
 - http://jonnyboats.wordpress.com/2009/06/05/displaying-gps-data-in-wpf/
 - [IDataErrorInfo](http://tarundotnet.wordpress.com/2011/03/03/wpf-tutorial-how-to-use-idataerrorinfo-in-wpf/)
+- http://www.koders.com/cpp/fidC476EF16ADC9D5337BA22E5E12FF0619CABF9090.aspx
 
 
 ##Icon##
