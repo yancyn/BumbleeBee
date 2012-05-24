@@ -7,6 +7,7 @@ Useful Links
 - [TeraTerm](http://ttssh2.sourceforge.jp/)
 - [SSCom32e](http://musicshield.googlecode.com/files/sscom32E.exe)
 - [System.IO.Serial](http://msdn.microsoft.com/en-us/library/bke5bt2e%28v=vs.90%29.aspx)
+- [YModem.NET](http://code.google.com/p/ymodemdotnet/)
 - GitSourceProvider - Git integrator for Visual Studio.
 - http://www.codeproject.com/Articles/75770/Basic-serial-port-listening-application
 - http://msmvps.com/blogs/coad/archive/2005/03/23/SerialPort-_2800_RS_2D00_232-Serial-COM-Port_2900_-in-C_2300_-.NET.aspx

@@ -120,8 +120,6 @@ namespace GBS.IO
                 //ProcessQueue(output);
                 #endregion
             }
-
-            //todo: Logger.Info(typeof(SerialCommander), output);
         }
         /// <summary>
         /// todo: refactor code
@@ -400,9 +398,15 @@ namespace GBS.IO
             SetMessage("Export setting to file...");
             SaveToFile(fileName);
         }
+        /// <summary>
+        /// TODO: Upgrade to specified firmware version.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool Upgrade(string fileName)
         {
             SetMessage("Upgrading firmware...");
+
             SerialCommand command = new SerialCommand("Upgrading firmware", ParameterType.String);
             command.GroupId = "05";
             command.ParameterId = "00";
@@ -414,14 +418,14 @@ namespace GBS.IO
                 Write(command);
                 Thread.Sleep(2000);
                 this.manager.Write("1");
-                //Disconnect();
+                Disconnect();
 
-                //LegacyCommunication ymodem = new LegacyCommunication(manager.CurrentSerialSettings.PortName);
-                //ymodem.SendBinaryFile(fileName);
-                //Thread.Sleep(8000);
+                YModem ymodem = new YModem(manager.CurrentSerialSettings.PortName);
+                ymodem.SendBinaryFile(fileName);
+                Thread.Sleep(8000);
 
-                //Connect();
-                //this.manager.Write("2");
+                Connect();
+                this.manager.Write("2");
 
                 command.ResetState();
                 return true;
@@ -475,18 +479,21 @@ namespace GBS.IO
 
             command.Enquiring = true;
 
-            string data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, command.ParameterValue.ToString());
-            if (command.ParameterValue is KeyValuePair<int,string>)
+            string valueToSend = command.ParameterValue.ToString();
+            if (command.ParameterValue is bool)
             {
-                KeyValuePair<int,string> hold = (KeyValuePair<int,string>)command.ParameterValue;
-                data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, hold.Key);
+                bool value = (bool)command.ParameterValue;
+                valueToSend = (value) ? "1" : "0";
+            }
+            else if (command.ParameterValue is KeyValuePair<int, string>)
+            {
+                KeyValuePair<int, string> hold = (KeyValuePair<int, string>)command.ParameterValue;
+                valueToSend = hold.Key.ToString();
             }
 
-            //TODO: boolean case 1 or 0
+            string data = string.Format("$CMD,W,{0},{1},{2}*CS#\r\n", command.GroupId, command.ParameterId, valueToSend);
             System.Diagnostics.Debug.WriteLine("Writing " + data);
             if (this.manager.IsOpen) this.manager.Write(data);
-
-            //TODO: set IDataErrorInfo success or fail
         }
         /// <summary>
         /// Clone all serial command attribute with 0 parameter value.
@@ -560,7 +567,7 @@ namespace GBS.IO
         }
         /// <summary>
         /// Import setting ready for apply.
-        /// TODO: make sure it is a same parameter set.
+        /// TODO: ensure it is a same parameter set.
         /// </summary>
         public void ImportSetting(string fileName)
         {

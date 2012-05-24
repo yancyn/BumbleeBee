@@ -37,6 +37,7 @@ namespace SerialPortCommander
     /// </summary>
     public class BooleanConverter : IValueConverter
     {
+        #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool actual = false, passin = false;
@@ -72,6 +73,7 @@ namespace SerialPortCommander
 
             return converted;
         }
+        #endregion
     }
     public class HexConverter : IMultiValueConverter
     {
@@ -202,6 +204,7 @@ namespace SerialPortCommander
     /// </summary>
     public class OptionConverter : IMultiValueConverter
     {
+        #region IMultiValueConverter Members
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             List<GBS.IO.KeyValuePair<int, string>> options = (List<GBS.IO.KeyValuePair<int, string>>)values[0];
@@ -223,5 +226,6 @@ namespace SerialPortCommander
 
             return values;
         }
+        #endregion
     }
 }

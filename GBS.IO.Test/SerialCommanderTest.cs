@@ -430,5 +430,12 @@ namespace GBS.IO.Test
             actual = Convert.ToInt32(target.ToLower(), 16);
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod()]
+        public void UpgradeTest()
+        {
+            YModem ymodem = new YModem("COM3");
+            ymodem.SendBinaryFile(@"C:\Users\yeang-shing.then\Desktop\cut.svg.plt");
+        }
     }
 }

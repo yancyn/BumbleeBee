@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="Crc16Ccit.cs" />
     <Compile Include="DataModel.designer.cs" />
-    <Compile Include="LegacyCommunication.cs" />
+    <Compile Include="YModem.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="ParameterGroup.cs" />

@@ -196,7 +196,7 @@ namespace GBS.IO
             return output.ToArray();
         }
         /// <summary>
-        /// HACK: Manipulate port name manually despite of available of local machine.
+        /// Deprecated HACK: Manipulate port name manually despite of available of local machine.
         /// </summary>
         /// <remarks>
         /// This is to handle exception scanario not encourage to use.

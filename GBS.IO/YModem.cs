@@ -13,8 +13,11 @@ namespace GBS.IO
         STARTED = 0,
         STOPPED = 1
     }
-
-    public class LegacyCommunication : IDisposable
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso>http://code.google.com/p/ymodemdotnet/</seealso>
+    public class YModem : IDisposable
     {
         private SerialPort sp;
         private SYSTEMSTATUS systemstatus;
@@ -33,13 +36,13 @@ namespace GBS.IO
         private NewLine newLine;
         public Progress progressUpdate;
 
-        public LegacyCommunication(String comport, NewLine newLineDelegate)
+        public YModem(String comport, NewLine newLineDelegate)
             : this(comport)
         {
             newLine += newLineDelegate;
         }
 
-        public LegacyCommunication(String comport)
+        public YModem(String comport)
         {
             sp = new SerialPort(comport);
             newLine += new NewLine(errorCheck);
@@ -133,7 +136,7 @@ namespace GBS.IO
         private void testSystemStatus()
         {
             sendNewLine();
-            //waitforline();
+            waitforline();
             if (linehistory[0].Contains("Operator Level"))
             {
                 loggedin = true;
@@ -214,32 +217,32 @@ namespace GBS.IO
             {
                 sp.Write(s);
                 sendNewLine();
-                //waitforline();
+                waitforline();
             }
         }
 
         public void SendBinaryFile(String Path)
         {
-            if (oplevel && !uslevel)
+            ////if (oplevel && !uslevel)
+            ////{
+            FileStream fs = new FileStream(Path, FileMode.Open);
+            BinaryReader br = new BinaryReader(fs);
+            MemoryStream ms = new MemoryStream();
+            BinaryWriter bw = new BinaryWriter(ms);
+            byte[] bytes = new byte[br.BaseStream.Length];
+            while (br.BaseStream.Position != br.BaseStream.Length)
             {
-                FileStream fs = new FileStream(Path, FileMode.Open);
-                BinaryReader br = new BinaryReader(fs);
-                MemoryStream ms = new MemoryStream();
-                BinaryWriter bw = new BinaryWriter(ms);
-                byte[] bytes = new byte[br.BaseStream.Length];
-                while (br.BaseStream.Position != br.BaseStream.Length)
-                {
-                    bw.Write(br.ReadBytes(1024));
-                    bw.Flush();
-                }
-                fs.Close();
-                br.Close();
-                bytes = ms.ToArray();
-                ms.Close();
+                bw.Write(br.ReadBytes(1024));
                 bw.Flush();
-                bw.Close();
-                SendBinaryFile(bytes, System.IO.Path.GetFileName(Path));
             }
+            fs.Close();
+            br.Close();
+            bytes = ms.ToArray();
+            ms.Close();
+            bw.Flush();
+            bw.Close();
+            SendBinaryFile(bytes, System.IO.Path.GetFileName(Path));
+            //}
         }
 
         public void SendBinaryFile(byte[] bytes, string filename)
@@ -247,7 +250,7 @@ namespace GBS.IO
             readbinary = true;
             sp.Write("AT+pBINARYUPLOAD");
             sendNewLine();
-            //waitfor('C');
+            waitfor('C');
             ushort packetnum = 0;
 
             Packet initpacket = new Packet();
@@ -265,8 +268,8 @@ namespace GBS.IO
 
             sp.Write(initpacket.packet, 0, initpacket.packet.Length);
 
-            //waitforack();
-            //waitfor('C');
+            waitforack();
+            waitfor('C');
 
             MemoryStream ms = new MemoryStream(bytes);
             byte[] temparr = new byte[1024];
@@ -290,12 +293,12 @@ namespace GBS.IO
                 sendPacket.data = temparr;
                 sendPacket.createPacket();
                 sp.Write(sendPacket.packet, 0, sendPacket.packet.Length);
-                //waitforack();
+                waitforack();
             }
             sendEndOftransmision();
-            //waitforack();
+            waitforack();
             readbinary = false;
-            //waitforline();
+            waitforline();
 
         }
 
@@ -312,28 +315,32 @@ namespace GBS.IO
             return;
         }
 
-        //private void waitforack()
-        //{
-        //    while (!_waitforack)
-        //    {
-        //        Application.DoEvents();
-        //    }
-        //    return;
-        //}
+        private void waitforack()
+        {
+            while (!_waitforack)
+            {
+                //Application.DoEvents();
+            }
 
-        //private void waitfor(char p)
-        //{
-        //    if (bytesreceived != 0)
-        //    {
-        //        while ((char)inputdata[bytesreceived - 1] != p)
-        //            Application.DoEvents();
-        //    }
-        //    else
-        //    {
-        //        Application.DoEvents();
-        //    }
-        //    return;
-        //}
+            return;
+        }
+
+        private void waitfor(char p)
+        {
+            if (bytesreceived != 0)
+            {
+                while ((char)inputdata[bytesreceived - 1] != p)
+                {
+                    //Application.DoEvents();
+                }
+            }
+            else
+            {
+                //Application.DoEvents();
+            }
+
+            return;
+        }
 
         public void login(string username, string password)
         {
@@ -341,13 +348,13 @@ namespace GBS.IO
             {
                 sp.Write(username);
                 sendNewLine();
-                //waitforline();
+                waitforline();
 
                 if (linehistory[linehistory.Count - 1].Contains("Password>"))
                 {
                     sp.Write(password);
                     sendNewLine();
-                    //waitforline();
+                    waitforline();
                     if (linehistory[linehistory.Count - 1].Contains("User Level>"))
                     {
                         uslevel = true;
@@ -370,18 +377,22 @@ namespace GBS.IO
             }
         }
 
-        //private void waitforline()
-        //{
-        //    while (!newline)
-        //        Application.DoEvents();
+        private void waitforline()
+        {
+            while (!newline)
+            {
+                //Application.DoEvents();
+            }
 
-        //    newline = false;
-        //}
+            newline = false;
+        }
 
         private void wait(bool p)
         {
-            //while (!p)
-            //    Application.DoEvents();
+            while (!p)
+            {
+                //    Application.DoEvents();
+            }
         }
 
         public void stopSystem()
@@ -400,7 +411,7 @@ namespace GBS.IO
 
         private void sendNewLine()
         {
-            //todo: sp.Write(new byte[] { (byte)0x0D }, 0, 1);
+            sp.Write(new byte[] { (byte)0x0D }, 0, 1);
             return;
         }
 
@@ -408,8 +419,8 @@ namespace GBS.IO
         {
             sp.Write("logout");
             sendNewLine();
-            //waitforline();
-            //waitforline();
+            waitforline();
+            waitforline();
         }
 
         public void startSystem()
@@ -426,7 +437,6 @@ namespace GBS.IO
         }
 
         #region IDisposable Members
-
         public void Dispose()
         {
             if (systemstatus == SYSTEMSTATUS.STOPPED)
@@ -436,7 +446,6 @@ namespace GBS.IO
             sp.WriteLine("logout");
             sp.Close();
         }
-
         #endregion
     }
 }
