@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRunConfiguration name="TestRunConfig" id="2f04b47d-eae5-45b2-8b28-0aef66235d07" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
+  <Description>This is a default test run configuration for a local test run.</Description>
+  <Deployment>
+    <DeploymentItem filename="GBS.IO.Test\Samples\current.serial" />
+  </Deployment>
+  <TestTypeSpecific />
+</TestRunConfiguration>

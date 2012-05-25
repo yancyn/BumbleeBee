@@ -13,23 +13,6 @@ namespace GBS.IO.Test
     [TestClass()]
     public class SerialCommanderTest
     {
-        private TestContext testContextInstance;
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-
         #region Additional test attributes
         // 
         //You can use the following additional attributes as you write your tests:
@@ -158,7 +141,6 @@ namespace GBS.IO.Test
             System.Diagnostics.Debug.WriteLine(target.Firmware);
             Assert.IsTrue(target.Firmware.Length > 0);
         }
-
 
         [TestMethod()]
         public void TrimTest()
@@ -432,7 +414,7 @@ namespace GBS.IO.Test
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod()]
+        //[TestMethod()]
         public void UpgradeTest()
         {
             YModem ymodem = new YModem("COM3");

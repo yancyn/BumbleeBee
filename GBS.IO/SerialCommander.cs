@@ -23,6 +23,10 @@ namespace GBS.IO
         /// </summary>
         private int attempts;
         /// <summary>
+        /// Put a stopper if the command never success!
+        /// </summary>
+        private bool neverSuccess;
+        /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
         /// True it is writing data into serial port otherwise it is just retrieving value. 
         /// </summary>
@@ -112,7 +116,7 @@ namespace GBS.IO
             OnPropertyChanged("Output");
         }
         /// <summary>
-        /// todo: refactor outputs_CollectionChanged
+        /// Deprecated.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -223,6 +227,7 @@ namespace GBS.IO
         {
             this.isWriting = false;
             this.attempts = 0;
+            this.neverSuccess = false;
 
             this.nameField = string.Empty;
             this.firmwareField = string.Empty;
@@ -338,6 +343,8 @@ namespace GBS.IO
 
             //increase attempt the more it try
             attempts += 5;
+            //if (attempts > 50 && this.neverSuccess) return;//halt on retrying anymore.
+            if (attempts > 50) attempts -= 50;//reduce trying frequency
             for (int i = 0; i < attempts; i++)
             {
                 //get version
@@ -372,6 +379,7 @@ namespace GBS.IO
                         //{
                         //counter++;
                         //if (counter > MAX_TRY) break;
+                        this.neverSuccess |= cmd.Success;
                         if (!cmd.Success)
                         {
                             SetMessage("Reading " + cmd.Name + "...");
@@ -615,7 +623,7 @@ namespace GBS.IO
         }
         /// <summary>
         /// Thread to process output collection.
-        /// TODO: handle thread safe
+        /// TODO: handle thread safe and refactor.
         /// </summary>
         private void ProcessQueue()
         {
