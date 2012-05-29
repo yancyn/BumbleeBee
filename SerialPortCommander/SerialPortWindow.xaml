@@ -1,0 +1,49 @@
+﻿<Window x:Class="SerialPortCommander.SerialPortWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="COM Port" Height="250" Width="200" WindowStartupLocation="CenterOwner">
+    <DockPanel LastChildFill="True" Margin="4">
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+            <Button Click="Cancel_Click">Cancel</Button>
+            <Button Click="OK_Click">OK</Button>            
+        </WrapPanel>
+        <Grid DataContext="{Binding Manager}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Port" Grid.Row="0" Grid.Column="0"/>
+            <ComboBox x:Name="cboPort" Grid.Row="0" Grid.Column="1"
+                                  ItemsSource="{Binding Path=CurrentSerialSettings.PortNameCollection}"
+                                  SelectedValue="{Binding Path=CurrentSerialSettings.PortName,Mode=TwoWay}"/>
+
+            <TextBlock Text="Baud Rate" Grid.Row="1" Grid.Column="0" />
+            <ComboBox x:Name="cboBaud" Grid.Row="1" Grid.Column="1"
+                                  ItemsSource="{Binding Path=CurrentSerialSettings.BaudRateCollection}"
+                                  SelectedValue="{Binding Path=CurrentSerialSettings.BaudRate,Mode=TwoWay}"/>
+
+            <TextBlock Text="Data Bits" Grid.Row="2" Grid.Column="0"/>
+            <ComboBox x:Name="cboDataBits" Grid.Row="2" Grid.Column="1"
+                                  ItemsSource="{Binding Path=CurrentSerialSettings.DataBitsCollection}"
+                                  SelectedValue="{Binding Path=CurrentSerialSettings.DataBits,Mode=TwoWay}"/>
+
+            <TextBlock Text="Parity" Grid.Row="3" Grid.Column="0"/>
+            <ComboBox x:Name="cboParity" Grid.Row="3" Grid.Column="1"
+                                  ItemsSource="{Binding Source={StaticResource ParityEnums}}"
+                                  SelectedValue="{Binding Path=CurrentSerialSettings.Parity,Mode=TwoWay}"/>
+
+            <TextBlock Text="Stop Bits" Grid.Row="4" Grid.Column="0"/>
+            <ComboBox x:Name="cboStopBits" Grid.Row="4" Grid.Column="1"
+                                  ItemsSource="{Binding Source={StaticResource StopBitsEnums}}"
+                                  SelectedValue="{Binding Path=CurrentSerialSettings.StopBits,Mode=TwoWay}"/>
+        </Grid>
+    </DockPanel>
+</Window>

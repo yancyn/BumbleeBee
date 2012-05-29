@@ -28,6 +28,10 @@ namespace SerialPortCommander
             InitializeComponent();
             Initialize();
         }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            commander.Dispose();
+        }
 
         #region Methods
         /// <summary>
@@ -110,6 +114,16 @@ namespace SerialPortCommander
                 pathText.Text = dialog.FileName;
         }
 
+        private void ComPort_Click(object sender, RoutedEventArgs e)
+        {
+            SerialPortWindow dialog = new SerialPortWindow();
+            dialog.Owner = this;
+            dialog.DataContext = commander;
+            if (dialog.ShowDialog().Value == true)
+            {
+            }
+        }
+
         private void ModeMenu_Click(object sender, RoutedEventArgs e)
         {
             MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
@@ -120,6 +134,9 @@ namespace SerialPortCommander
                 else
                     menu.IsChecked = false;
             }
+
+            tabItem3.Visibility = (menuPTX.IsChecked)
+                ? System.Windows.Visibility.Visible : tabItem3.Visibility = System.Windows.Visibility.Collapsed;
         }
         private void MenuSetting_Click(object sender, RoutedEventArgs e)
         {
@@ -143,11 +160,6 @@ namespace SerialPortCommander
         {
             Hyperlink hyperlink = (sender as Hyperlink);
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(hyperlink.NavigateUri.ToString()));
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            commander.Dispose();
         }
         #endregion
     }

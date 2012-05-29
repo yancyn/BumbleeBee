@@ -48,6 +48,9 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit"/>
+            <MenuItem Header="_Setup">
+                <MenuItem Header="_COM Port" Click="ComPort_Click"/>
+            </MenuItem>
             <MenuItem Header="_Action">
                 <MenuItem Header="_Connect" Command="{Binding ConnectPortCommand}"
                           IsEnabled="{Binding Manager.IsOpen,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource TrueToDisable}}">
@@ -126,7 +129,10 @@
         </StatusBar>
 
         <DockPanel Grid.Row="2">
-            <TabControl Margin="4pt">
+            <TabControl x:Name="tabControl1" Margin="4pt" SelectedIndex="1">
+                <TabItem Header="Data" Name="tabItem3" Visibility="Collapsed">
+                    <Grid />
+                </TabItem>
                 <TabItem Header="Setting" Name="tabItem1">
                     <DockPanel LastChildFill="True">
                         <WrapPanel HorizontalAlignment="Right" DockPanel.Dock="Bottom">
@@ -180,10 +186,7 @@
                         </Grid>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Data" Name="tabItem3">
-                    <Grid />
-                </TabItem>
-                <TabItem Header="COM" Name="tabItem4" DataContext="{Binding Path=Manager}">
+                <!--<TabItem Header="COM" Name="tabItem4" DataContext="{Binding Path=Manager}">
                     <Grid Margin="4px">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
@@ -201,8 +204,6 @@
                         <ComboBox x:Name="cboPort" Grid.Row="0" Grid.Column="1"
                                   ItemsSource="{Binding Path=CurrentSerialSettings.PortNameCollection}"
                                   SelectedValue="{Binding Path=CurrentSerialSettings.PortName,Mode=TwoWay}"/>
-                        <!--ItemsSource="{Binding Source={StaticResource Manager}}" SelectedValue="{Binding PortNameCollection,Mode=TwoWay}"/>-->
-
                         <TextBlock Text="Baud Rate" Grid.Row="1" Grid.Column="0" />
                         <ComboBox x:Name="cboBaud" Grid.Row="1" Grid.Column="1"
                                   ItemsSource="{Binding Path=CurrentSerialSettings.BaudRateCollection}"
@@ -223,7 +224,7 @@
                                   ItemsSource="{Binding Source={StaticResource StopBitsEnums}}"
                                   SelectedValue="{Binding Path=CurrentSerialSettings.StopBits,Mode=TwoWay}"/>
                     </Grid>
-                </TabItem>
+                </TabItem>-->
                 <TabItem Header="Debug" Name="tabItem5">
                     <DockPanel LastChildFill="True">
                         <WrapPanel HorizontalAlignment="Right" DockPanel.Dock="Bottom">
