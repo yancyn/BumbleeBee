@@ -110,8 +110,14 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBox Width="80" TextAlignment="Right"
                      Text="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                     Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}"/>
+                     Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                <TextBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBox.Background>
+            </TextBox>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
@@ -120,8 +126,14 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <s:NumericUpDown Width="80" MaxValue="{Binding Path=MaxValue}" MinValue="{Binding Path=MinValue}" Margin="0,0,4,0"
                              Value="{Binding Path=ParameterValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True,NotifyOnValidationError=True}"
-                             Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                             Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}"/>
+                             Style="{StaticResource RedToolTip}" ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                <s:NumericUpDown.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </s:NumericUpDown.Background>
+            </s:NumericUpDown>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>
@@ -133,8 +145,13 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <TextBlock Text="0x"/>
             <TextBox Style="{StaticResource RedToolTip}" Width="60" TextAlignment="Right"
-                     ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                     Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}">
+                     ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
+                <TextBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </TextBox.Background>
                 <TextBox.Text>
                     <MultiBinding Converter="{StaticResource HexConverter}">
                         <Binding Path="ParameterValue" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"
@@ -151,8 +168,13 @@
     <DataTemplate x:Key="OptionsTemplate">
         <WrapPanel Margin="0,4">
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
-            <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value"
-                      Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}">
+            <ComboBox ItemsSource="{Binding Path=ParameterOptions}" DisplayMemberPath="Value">
+                <ComboBox.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </ComboBox.Background>
                 <ComboBox.SelectedValue>
                     <MultiBinding Converter="{StaticResource OptionConverter}">
                         <Binding Path="ParameterOptions"/>
@@ -171,12 +193,24 @@
             <TextBlock Text="{Binding Path=Name}" Style="{StaticResource Labeling}"/>
             <RadioButton GroupName="{Binding Name}"
                 Content="{Binding ParameterOptions[0],Converter={StaticResource GetNameConverter}}"
-                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}"/>
+                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=0,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <RadioButton.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </RadioButton.Background>
+            </RadioButton>
             <RadioButton GroupName="{Binding Name}"
                 Content="{Binding ParameterOptions[1],Converter={StaticResource GetNameConverter}}"
-                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                Background="{Binding Path=.,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BackgroundConverter}}"/>
+                IsChecked="{Binding Path=ParameterValue,Converter={StaticResource BooleanConverter},ConverterParameter=1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+                <RadioButton.Background>
+                    <MultiBinding Converter="{StaticResource BackgroundConverter}">
+                        <Binding Path="Success" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding Path="."/>
+                    </MultiBinding>
+                </RadioButton.Background>
+            </RadioButton>
             <TextBlock Text="{Binding Path=Unit}" Width="40"/>
         </WrapPanel>
     </DataTemplate>

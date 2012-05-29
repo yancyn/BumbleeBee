@@ -125,24 +125,27 @@ namespace SerialPortCommander
     /// <summary>
     /// False to set background as gold otherwise default background color.
     /// </summary>
-    public class BackgroundConverter : IValueConverter // IMultiValueConverter
+    public class BackgroundConverter : IMultiValueConverter //IValueConverter
     {
-        #region IValueConverter Members
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        #region IMultiValueConverter Members
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is SerialCommand)
+            if (values.Length > 1)
             {
-                GBS.IO.SerialCommand command = (GBS.IO.SerialCommand)value;
-                if (!command.Success)
+                if (values[1] is SerialCommand)
                 {
-                    command.SetError("Fail to read or write");
-                    return System.Windows.Media.Brushes.Gold;
+                    GBS.IO.SerialCommand command = (GBS.IO.SerialCommand)values[1];
+                    if (!command.Success)
+                    {
+                        command.SetError("Fail to read or write");
+                        return System.Windows.Media.Brushes.Gold;
+                    }
                 }
             }
 
             return null;
         }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

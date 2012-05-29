@@ -345,7 +345,9 @@ namespace GBS.IO
             attempts += 5;
             //if (attempts > 50 && this.neverSuccess) return;//halt on retrying anymore.
             if (attempts > 50) attempts -= 50;//reduce trying frequency
-            for (int i = 0; i < attempts; i++)
+
+
+            for (int i = 0; i < 10; i++) //30
             {
                 //get version
                 if (this.firmwareField.Length == 0)
@@ -365,7 +367,6 @@ namespace GBS.IO
                     command.ParameterId = "03";
                     Read(command);
                 }
-                //}
 
                 //execute all commands
                 foreach (ParameterGroup group in this.commandGroupsField)
@@ -389,8 +390,8 @@ namespace GBS.IO
                         }
                     }
                 }
-                //    Thread.Sleep(100);
-            }
+                //Thread.Sleep(100);
+            }//end of loops
         }
         /// <summary>
         /// Load layout with 0 or empty string.
