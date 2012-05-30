@@ -18,15 +18,6 @@ namespace GBS.IO
         /// </summary>
         const int ONE_MOMENT = 1000;
         /// <summary>
-        /// Increase attempt frequency if there are always fail
-        /// to retrieve accurate result in thread pool.
-        /// </summary>
-        private int attempts;
-        /// <summary>
-        /// Put a stopper if the command never success!
-        /// </summary>
-        private bool neverSuccess;
-        /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
         /// True it is writing data into serial port otherwise it is just retrieving value. 
         /// </summary>
@@ -38,8 +29,6 @@ namespace GBS.IO
         /// </summary>
         protected const string DEFAULT_FILENAME = "current.serial";
         private SerialCommand currentCommand;
-        private ThreadStart threadStart;
-        private Thread thread;
         #endregion
 
         #region Properties
@@ -226,8 +215,6 @@ namespace GBS.IO
         protected void Initialize()
         {
             this.isWriting = false;
-            this.attempts = 0;
-            this.neverSuccess = false;
 
             this.nameField = string.Empty;
             this.firmwareField = string.Empty;
@@ -256,7 +243,6 @@ namespace GBS.IO
         /// </summary>
         public void Connect()
         {
-            attempts = 0;
             SetMessage("Connecting to COM...");
             try
             {
@@ -285,14 +271,14 @@ namespace GBS.IO
         {
             SetMessage("Disconnected COM.");
             this.manager.StopListening();
-            if (thread != null) thread.Abort();
+            //if (thread != null) thread.Abort();
         }
         /// <summary>
         /// Apply changes.
         /// </summary>
         public void Apply()
         {
-            attempts = 0;
+            //attempts = 0;
             if (!manager.IsOpen)
             {
                 SetMessage("No port connected!");
@@ -326,6 +312,7 @@ namespace GBS.IO
                 }
             }
         }
+
         /// <summary>
         /// Retrieve data from connected device through com port.
         /// </summary>
@@ -334,24 +321,22 @@ namespace GBS.IO
             this.isWriting = false;
 
             //ensure it is only execute one
-            if (thread != null) thread.Abort();
-            threadStart = new ThreadStart(ProcessQueue);
-            thread = new Thread(threadStart);
-            thread.Start();
-            System.Diagnostics.Debug.WriteLine("thread started");
+            //if (thread != null) thread.Abort();
+            //threadStart = new ThreadStart(ProcessQueue);
+            //thread = new Thread(threadStart);
+            //thread.Start();
+            //System.Diagnostics.Debug.WriteLine("thread started");
 
-
-            //increase attempt the more it try
-            attempts += 5;
-            //if (attempts > 50 && this.neverSuccess) return;//halt on retrying anymore.
-            if (attempts > 50) attempts -= 50;//reduce trying frequency
-
-
-            for (int i = 0; i < 10; i++) //30
+            int totalFail = 1;
+            while (totalFail > 0)
             {
+                ProcessOutputsCollection();//key: must process first before sending command to serial port
+
+                totalFail = 0;
                 //get version
                 if (this.firmwareField.Length == 0)
                 {
+                    totalFail++;
                     SetMessage("Reading firmware...");
                     SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
                     command.GroupId = "05";
@@ -361,6 +346,7 @@ namespace GBS.IO
 
                 if (this.codeplugField.Length == 0)
                 {
+                    totalFail++;
                     SetMessage("Reading codeplug...");
                     SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
                     command.GroupId = "05";
@@ -373,26 +359,128 @@ namespace GBS.IO
                 {
                     foreach (SerialCommand cmd in group.Commands)
                     {
-                        //currentCommand = cmd;
-                        //int counter = 0;
-
-                        //                    while (!cmd.Success)
-                        //{
-                        //counter++;
-                        //if (counter > MAX_TRY) break;
-                        this.neverSuccess |= cmd.Success;
                         if (!cmd.Success)
                         {
                             SetMessage("Reading " + cmd.Name + "...");
                             Read(cmd);
+                            totalFail++;
                             //Thread.Sleep(100);
                             //}
                         }
                     }
                 }
-                //Thread.Sleep(100);
-            }//end of loops
+            }//end loop
+
+            //Thread.Sleep(100);
+            //}//end of loops
         }
+        /// <summary>
+        /// Process all output we having from manager_NewSerialDataRecieved result.
+        /// </summary>
+        private void ProcessOutputsCollection()
+        {
+            for (int i = this.outputsField.Count - 1; i >= 0; i--)
+            {
+                string output = this.outputsField[i];
+                string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string line in lines)
+                {
+                    Match match = Regex.Match(line, @"REPLY\(\d{0,2}, \d{0,2}\): .*\r");
+                    if (!match.Success) continue;
+
+                    string[] hold = new string[3];
+                    MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
+                    if (matches.Count < 2) continue;
+
+                    hold[0] = matches[0].Groups[0].Value;
+                    hold[1] = matches[1].Groups[0].Value;
+                    match = Regex.Match(line, @": .*");
+                    if (match.Success)
+                    {
+                        hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
+                        hold[2] = hold[2].Trim();
+                    }
+
+                    LookupCommand(hold[0], hold[1], hold[2]);
+                }
+
+                this.outputsField.RemoveAt(i);
+            }//end loop
+        }
+        /// <summary>
+        /// Lookup whole SerialCommand collection to map value return.
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="paramId"></param>
+        /// <param name="paramValue"></param>
+        /// <returns></returns>
+        private bool LookupCommand(string groupId, string paramId, string paramValue)
+        {
+            bool found = false;
+            if (this.firmwareField.Length == 0)
+            {
+                if (groupId.Equals("05") && paramId.Equals("02"))
+                {
+                    this.firmwareField = paramValue;
+                    OnPropertyChanged("Firmware");
+                    return true;
+                }
+            }
+            if (this.codeplugField.Length == 0)
+            {
+                if (groupId.Equals("05") && paramId.Equals("03"))
+                {
+                    this.codeplugField = paramValue;
+                    OnPropertyChanged("Codeplug");
+                    return true;
+                }
+            }
+
+            foreach (ParameterGroup group in this.commandGroupsField)
+            {
+                foreach (SerialCommand command in group.Commands)
+                {
+                    if (command.GroupId.Equals(groupId) && command.ParameterId.Equals(paramId))
+                    {
+                        switch (command.ParameterType)
+                        {
+                            case ParameterType.Integer:
+                                int result = 0;
+                                if (paramValue == "0")
+                                {
+                                    command.ParameterValue = 0;
+                                    command.SetSuccess();
+                                }
+                                else
+                                {
+                                    Int32.TryParse(paramValue, out result);
+                                    if (result > 0)
+                                    {
+                                        command.ParameterValue = result;
+                                        command.SetSuccess();
+                                    }
+                                }
+                                break;
+                            case ParameterType.String:
+                                command.ParameterValue = paramValue;
+                                command.SetSuccess();
+                                break;
+                            case ParameterType.Hex:
+                                //from 0xFFFF convert back to 65535
+                                command.ParameterValue = System.Convert.ToInt32(paramValue.ToLower(), 16);
+                                command.SetSuccess();
+                                break;
+                        }
+
+                        OnPropertyChanged("ParameterValue");
+                        return true;
+                    }
+                }
+            }//end loop group
+
+            return found;
+        }
+
         /// <summary>
         /// Load layout with 0 or empty string.
         /// </summary>
@@ -403,7 +491,6 @@ namespace GBS.IO
         public void LoadSetting(string fileName)
         {
             SetMessage("Load setting from " + fileName + "...");
-            attempts = 0;
             fileName = AppDomain.CurrentDomain.BaseDirectory + fileName;
             if (File.Exists(fileName))
             {
@@ -600,11 +687,8 @@ namespace GBS.IO
         }
         public void Dispose()
         {
-            if (thread != null)
-            {
-                //thread.Join();
-                thread.Abort();
-            }
+            //if (thread != null)
+            //    thread.Abort();
             if (manager != null)
                 manager.Dispose();
         }
@@ -623,8 +707,7 @@ namespace GBS.IO
             //OnPropertyChanged("Message");
         }
         /// <summary>
-        /// Thread to process output collection.
-        /// TODO: handle thread safe and refactor.
+        /// Deprecated: Thread to process output collection.
         /// </summary>
         private void ProcessQueue()
         {
