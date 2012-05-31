@@ -20,5 +20,8 @@
     <Setting Name="Company" Type="System.String" Scope="User">
       <Value Profile="(Default)">TAM - NETWORK</Value>
     </Setting>
+    <Setting Name="Entry" Type="System.String" Scope="User">
+      <Value Profile="(Default)">current.serial</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

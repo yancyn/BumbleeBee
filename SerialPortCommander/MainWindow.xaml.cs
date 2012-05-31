@@ -41,7 +41,17 @@ namespace SerialPortCommander
         {
             this.Title = Properties.Settings.Default.Company + " Studio" + " ver " + GetAssemblyVersion("SerialPortCommander.exe", 3);
             commander = new SerialCommander("BumbleBee");
-            commander.LoadSetting();
+            commander.LoadSetting(Properties.Settings.Default.Entry);
+
+            //check the selected mode based on file name loaded
+            MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
+            int index = 0;
+            string fileName = Properties.Settings.Default.Entry.TrimEnd(new char[] { '.', 's', 'e', 'r', 'i', 'a', 'l' });
+            fileName = fileName.TrimStart(new char[] { 'c', 'u', 'r', 'r', 'e', 'n', 't' });
+            if (fileName.Length > 0)
+                index = Convert.ToInt32(fileName);
+            menus[index].IsChecked = true;
+
             MainGrid.DataContext = commander;
         }
         public string GetAssemblyVersion(string assemblyName, int digit)

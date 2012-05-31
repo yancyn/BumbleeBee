@@ -22,10 +22,15 @@ namespace GBS.IO
         /// True it is writing data into serial port otherwise it is just retrieving value. 
         /// </summary>
         private bool isWriting;
+        /// <summary>
+        /// A stopper to prevent connected to a wrong device return no result
+        /// so it is no point to continue retrieving.
+        /// </summary>
+        private bool neverSuccess;
         private SerialPortManager manager;
         public SerialPortManager Manager { get { return this.manager; } }
         /// <summary>
-        /// Default configuration file to lookup at application directory.
+        /// current.serial - default configuration file to lookup at application directory.
         /// </summary>
         protected const string DEFAULT_FILENAME = "current.serial";
         private SerialCommand currentCommand;
@@ -157,7 +162,7 @@ namespace GBS.IO
                         foreach (SerialCommand command in group.Commands)
                         {
                             if (command.GroupId.Equals(hold[0]) && command.ParameterId.Equals(hold[1]))
-                                //&& currentCommand.GroupId.Equals(command.GroupId) && currentCommand.ParameterId.Equals(command.ParameterId))
+                            //&& currentCommand.GroupId.Equals(command.GroupId) && currentCommand.ParameterId.Equals(command.ParameterId))
                             {
                                 //currentCommand.SetSuccess();
                                 switch (command.ParameterType)
@@ -215,6 +220,7 @@ namespace GBS.IO
         protected void Initialize()
         {
             this.isWriting = false;
+            this.neverSuccess = true;
 
             this.nameField = string.Empty;
             this.firmwareField = string.Empty;
@@ -318,8 +324,6 @@ namespace GBS.IO
         /// </summary>
         public void Retrieve()
         {
-            this.isWriting = false;
-
             //ensure it is only execute one
             //if (thread != null) thread.Abort();
             //threadStart = new ThreadStart(ProcessQueue);
@@ -327,9 +331,15 @@ namespace GBS.IO
             //thread.Start();
             //System.Diagnostics.Debug.WriteLine("thread started");
 
+            this.isWriting = false;
+            this.neverSuccess = true;
+            int counter = 0;
             int totalFail = 1;
             while (totalFail > 0)
             {
+                counter++;
+                if (counter > 2 && neverSuccess) break;
+
                 ProcessOutputsCollection();//key: must process first before sending command to serial port
 
                 totalFail = 0;
@@ -379,6 +389,7 @@ namespace GBS.IO
         /// </summary>
         private void ProcessOutputsCollection()
         {
+            System.Diagnostics.Debug.WriteLine("ProcessOutputsCollection");
             //for (int i = this.outputsField.Count - 1; i >= 0; i--)
             //{
             while (this.outputsField.Count > 0)
@@ -425,6 +436,7 @@ namespace GBS.IO
                 {
                     this.firmwareField = paramValue;
                     OnPropertyChanged("Firmware");
+                    neverSuccess &= false;
                     return true;
                 }
             }
@@ -434,6 +446,7 @@ namespace GBS.IO
                 {
                     this.codeplugField = paramValue;
                     OnPropertyChanged("Codeplug");
+                    neverSuccess &= false;
                     return true;
                 }
             }
@@ -475,6 +488,7 @@ namespace GBS.IO
                         }
 
                         OnPropertyChanged("ParameterValue");
+                        neverSuccess &= false;
                         return true;
                     }
                 }
