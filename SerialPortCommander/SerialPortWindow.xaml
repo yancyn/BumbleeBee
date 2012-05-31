@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="COM Port" Height="250" Width="200" WindowStartupLocation="CenterOwner">
     <DockPanel LastChildFill="True" Margin="4">
-        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center">
             <Button Click="Cancel_Click">Cancel</Button>
             <Button Click="OK_Click">OK</Button>            
         </WrapPanel>
