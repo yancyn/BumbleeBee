@@ -14,9 +14,13 @@ namespace GBS.IO
     {
         #region Fields
         /// <summary>
-        /// Interval waiting time when message keep updating.
+        /// Interval waiting time when message keep writing.
         /// </summary>
-        const int ONE_MOMENT = 1000;
+        const int ONE_SECOND = 1000;
+        /// <summary>
+        /// Interval waiting time when message keep retrieving.
+        /// </summary>
+        const int ONE_MOMENT = 200;
         /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
         /// True it is writing data into serial port otherwise it is just retrieving value. 
@@ -34,6 +38,17 @@ namespace GBS.IO
         /// </summary>
         protected const string DEFAULT_FILENAME = "current.serial";
         private SerialCommand currentCommand;
+
+        private int lineNo;
+        private int startIndex;
+
+        private int startRetrieve;
+        private int endRetrieve;
+        /// <summary>
+        /// Indicate the last processing index.
+        /// This will be the next starting index again for retrieve.
+        /// </summary>
+        private int lastIndex;
         #endregion
 
         #region Properties
@@ -100,8 +115,11 @@ namespace GBS.IO
         {
             string output = Encoding.ASCII.GetString(e.Data);
 
+            this.lineNo++;
+            if (startRetrieve == 1) startIndex = lineNo;            
+
             //retrieve scenario
-            if (output.Contains("REPLY"))
+            //if (output.Contains("REPLY"))
                 this.outputsField.Add(output);
             //Match match = Regex.Match(output, @"REPLY\(\d{0,2}, \d{0,2}\): .*\r");
             //if (match.Success) this.outputsField.Add(output);
@@ -219,6 +237,12 @@ namespace GBS.IO
         /// </summary>
         protected void Initialize()
         {
+            this.lineNo = 0;
+            this.startIndex = 0;
+            this.startRetrieve = 0;
+            this.endRetrieve = 0;
+            this.lastIndex = 0;
+
             this.isWriting = false;
             this.neverSuccess = true;
 
@@ -313,7 +337,7 @@ namespace GBS.IO
                         }
 
                         command.ResetState();
-                        Thread.Sleep(ONE_MOMENT);//give hardware device a rest and process time
+                        Thread.Sleep(ONE_SECOND);//give hardware device a rest and process time
                     }
                 }
             }
@@ -324,6 +348,7 @@ namespace GBS.IO
         /// </summary>
         public void Retrieve()
         {
+            startRetrieve++;
             //ensure it is only execute one
             //if (thread != null) thread.Abort();
             //threadStart = new ThreadStart(ProcessQueue);
@@ -335,54 +360,83 @@ namespace GBS.IO
             this.neverSuccess = true;
             int counter = 0;
             int totalFail = 1;
-            while (totalFail > 0)
+            //while (totalFail > 0)
+            //{
+            counter++;
+            //if (counter > 2 && neverSuccess) break;
+
+            totalFail = 0;
+            //get version
+            if (this.firmwareField.Length == 0)
             {
-                counter++;
-                if (counter > 2 && neverSuccess) break;
+                totalFail++;
+                SetMessage("Reading firmware...");
+                SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
+                command.GroupId = "05";
+                command.ParameterId = "02";
+                Read(command);
+                Thread.Sleep(ONE_MOMENT);
+            }
 
-                ProcessOutputsCollection();//key: must process first before sending command to serial port
+            if (this.codeplugField.Length == 0)
+            {
+                totalFail++;
+                SetMessage("Reading codeplug...");
+                SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
+                command.GroupId = "05";
+                command.ParameterId = "03";
+                Read(command);
+                Thread.Sleep(ONE_MOMENT);
+            }
 
-                totalFail = 0;
-                //get version
-                if (this.firmwareField.Length == 0)
+            //execute all commands
+            foreach (ParameterGroup group in this.commandGroupsField)
+            {
+                foreach (SerialCommand cmd in group.Commands)
                 {
-                    totalFail++;
-                    SetMessage("Reading firmware...");
-                    SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
-                    command.GroupId = "05";
-                    command.ParameterId = "02";
-                    Read(command);
-                }
-
-                if (this.codeplugField.Length == 0)
-                {
-                    totalFail++;
-                    SetMessage("Reading codeplug...");
-                    SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
-                    command.GroupId = "05";
-                    command.ParameterId = "03";
-                    Read(command);
-                }
-
-                //execute all commands
-                foreach (ParameterGroup group in this.commandGroupsField)
-                {
-                    foreach (SerialCommand cmd in group.Commands)
+                    if (!cmd.Success)
                     {
-                        if (!cmd.Success)
-                        {
-                            SetMessage("Reading " + cmd.Name + "...");
-                            Read(cmd);
-                            totalFail++;
-                            //Thread.Sleep(100);
-                            //}
-                        }
+                        SetMessage("Reading " + cmd.Name + "...");
+                        Read(cmd);
+                        Thread.Sleep(ONE_MOMENT);
+                        totalFail++;
                     }
                 }
-            }//end loop
+            }
+            //}//end loop
 
-            //Thread.Sleep(100);
-            //}//end of loops
+            //Thread.Sleep(5000);
+            ProcessOutputsToLine();
+            //ProcessOutputsCollection();//key: must process first before sending command to serial port
+        }
+        private void ProcessOutputsToLine()
+        {
+            string cache = string.Empty;
+            for (int i = lastIndex; i < this.outputsField.Count; i++)
+                cache += this.outputsField[i];
+            lastIndex = this.outputsField.Count - 1;
+
+            string[] lines = cache.Split(new char[] { '\r', '\n' });
+            foreach (string line in lines)
+            {
+                Match match = Regex.Match(line, @"REPLY\(\d{0,2}, \d{0,2}\): .*");
+                if (!match.Success) continue;
+
+                string[] hold = new string[3];
+                MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
+                if (matches.Count < 2) continue;
+
+                hold[0] = matches[0].Groups[0].Value;
+                hold[1] = matches[1].Groups[0].Value;
+                match = Regex.Match(line, @": .*");
+                if (match.Success)
+                {
+                    hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
+                    hold[2] = hold[2].Trim();
+                }
+
+                LookupCommand(hold[0], hold[1], hold[2]);
+            }
         }
         /// <summary>
         /// Process all output we having from manager_NewSerialDataRecieved result.
@@ -396,6 +450,13 @@ namespace GBS.IO
             {
                 int i = this.outputsField.Count - 1;
                 string output = this.outputsField[i];
+
+                if (!this.outputField.Contains("REPLY"))
+                {
+                    this.outputsField.RemoveAt(i);
+                    continue;
+                }
+                
                 string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string line in lines)
                 {
@@ -568,6 +629,8 @@ namespace GBS.IO
         public void ClearOutput()
         {
             this.outputField = string.Empty;
+            this.outputsField.Clear();
+            this.lastIndex = 0;
             OnPropertyChanged("Output");
         }
         #endregion
