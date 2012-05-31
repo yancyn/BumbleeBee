@@ -435,5 +435,21 @@ namespace GBS.IO.Test
 
             System.Diagnostics.Debug.WriteLine("total loops:" + counter);
         }
+        /// <summary>
+        /// A test on changing the size of loop.
+        /// </summary>
+        [TestMethod()]
+        public void ProcessOutputsCollectionTest()
+        {
+            SerialCommander target = new SerialCommander("BumbleBee");
+            for (int i = 0; i < 10; i++)
+                target.Outputs.Add(i.ToString());
+
+            while (target.Outputs.Count > 0)
+            {
+                int i = target.Outputs.Count - 1;
+                target.Outputs.RemoveAt(i);
+            }
+        }
     }
 }

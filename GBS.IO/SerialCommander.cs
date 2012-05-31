@@ -379,8 +379,11 @@ namespace GBS.IO
         /// </summary>
         private void ProcessOutputsCollection()
         {
-            for (int i = this.outputsField.Count - 1; i >= 0; i--)
+            //for (int i = this.outputsField.Count - 1; i >= 0; i--)
+            //{
+            while (this.outputsField.Count > 0)
             {
+                int i = this.outputsField.Count - 1;
                 string output = this.outputsField[i];
                 string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string line in lines)
@@ -416,7 +419,6 @@ namespace GBS.IO
         /// <returns></returns>
         private bool LookupCommand(string groupId, string paramId, string paramValue)
         {
-            bool found = false;
             if (this.firmwareField.Length == 0)
             {
                 if (groupId.Equals("05") && paramId.Equals("02"))
@@ -478,7 +480,7 @@ namespace GBS.IO
                 }
             }//end loop group
 
-            return found;
+            return false;
         }
 
         /// <summary>
