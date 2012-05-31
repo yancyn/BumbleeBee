@@ -30,6 +30,18 @@ namespace SerialPortCommander
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //save the last selected device mode into config file
+            int index = 0;
+            string[] fileNames = new string[] { "current.serial", "current1.serial", "current2.serial" };
+            MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
+            for (int i = 0; i < menus.Length; i++)
+            {
+                if (menus[i].IsChecked)
+                    index = i;
+            }
+            Properties.Settings.Default.Entry = fileNames[index];
+            Properties.Settings.Default.Save();
+
             commander.Dispose();
         }
 
