@@ -35,13 +35,17 @@ namespace GBS.IO
         public delegate void NewLine(String s);
         private NewLine newLine;
         public Progress progressUpdate;
+        const int ONE_MOMENT = 3000;
 
         public YModem(String comport, NewLine newLineDelegate)
             : this(comport)
         {
             newLine += newLineDelegate;
         }
-
+        /// <summary>
+        /// Constructor by provide COM port name.
+        /// </summary>
+        /// <param name="comport"></param>
         public YModem(String comport)
         {
             sp = new SerialPort(comport);
@@ -56,7 +60,32 @@ namespace GBS.IO
                 sp.ReceivedBytesThreshold = 1;
                 sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
                 systemstatus = SYSTEMSTATUS.STARTED;
+                //testSystemStatus();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Poort con niet geopend worden.", ex);
+            }
+        }
+        /// <summary>
+        /// Constructor by provide whole serial port with existing setting.
+        /// </summary>
+        /// <param name="manager"></param>
+        public YModem(SerialPort port)
+        {
+            sp = port;
+            newLine += new NewLine(errorCheck);
 
+            try
+            {
+                if (!sp.IsOpen) sp.Open();
+                sp.RtsEnable = true;
+                sp.StopBits = System.IO.Ports.StopBits.One;
+                sp.DataBits = 8;
+                sp.BaudRate = 115200;
+                sp.ReceivedBytesThreshold = 1;
+                sp.DataReceived += new SerialDataReceivedEventHandler(sp_DataReceived);
+                systemstatus = SYSTEMSTATUS.STARTED;
                 //testSystemStatus();
             }
             catch (Exception ex)
@@ -183,7 +212,7 @@ namespace GBS.IO
                         char[] tca = new char[1];
                         tca[0] = (char)0x18;
                         sp.Write(tca, 0, 1);
-                        throw new Exception("Filesend failed!");
+                        throw new Exception("File send failed!");
                     }
                     bytesreceived++;
                 }
@@ -237,10 +266,12 @@ namespace GBS.IO
             }
             fs.Close();
             br.Close();
+
             bytes = ms.ToArray();
             ms.Close();
             bw.Flush();
             bw.Close();
+
             SendBinaryFile(bytes, System.IO.Path.GetFileName(Path));
             //}
         }
@@ -248,9 +279,9 @@ namespace GBS.IO
         public void SendBinaryFile(byte[] bytes, string filename)
         {
             readbinary = true;
-            sp.Write("AT+pBINARYUPLOAD");
-            sendNewLine();
-            waitfor('C');
+            //sp.Write("AT+pBINARYUPLOAD");
+            //sendNewLine();
+            //waitfor('C');
             ushort packetnum = 0;
 
             Packet initpacket = new Packet();
@@ -258,31 +289,24 @@ namespace GBS.IO
             initpacket.packetnum = packetnum;
             initpacket.filename = filename;
             initpacket.filelength = bytes.Length;
-
-            if (filename.Length > 125)
-                initpacket.longpacket = true;
-            else
-                initpacket.longpacket = false;
-
+            initpacket.longpacket = (filename.Length > 125) ? true : false;
             initpacket.createPacket();
-
             sp.Write(initpacket.packet, 0, initpacket.packet.Length);
+            //Thread.Sleep(ONE_MOMENT);
 
-            waitforack();
-            waitfor('C');
+            //waitforack();
+            //waitfor('C');
 
             MemoryStream ms = new MemoryStream(bytes);
             byte[] temparr = new byte[1024];
             Packet sendPacket;
             long numpack = Math.Abs(((long)ms.Length) / ((long)1024));
 
-
             //long leftover = ms.Length % 1024;
             BinaryReader br = new BinaryReader(ms);
-
             while (ms.Position != ms.Length)
             {
-                progressUpdate(packetnum, Convert.ToInt32(numpack));
+                //progressUpdate(packetnum, Convert.ToInt32(numpack));
                 _waitforack = false;
                 packetnum++;
                 temparr = br.ReadBytes(1024);
@@ -293,13 +317,17 @@ namespace GBS.IO
                 sendPacket.data = temparr;
                 sendPacket.createPacket();
                 sp.Write(sendPacket.packet, 0, sendPacket.packet.Length);
-                waitforack();
+                //Thread.Sleep(ONE_MOMENT);
+                //waitforack();
             }
-            sendEndOftransmision();
-            waitforack();
-            readbinary = false;
-            waitforline();
 
+            Thread.Sleep(8000);
+            sendEndOftransmision();
+
+            //waitforack();
+            readbinary = false;
+            //waitforline();
+            sp.Close();
         }
 
         private void sendEndOftransmision()
@@ -312,7 +340,6 @@ namespace GBS.IO
             endpacket.data = new byte[128];
             endpacket.createPacket();
             sp.Write(endpacket.packet, 0, endpacket.packet.Length);
-            return;
         }
 
         private void waitforack()

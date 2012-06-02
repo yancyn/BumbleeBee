@@ -20,6 +20,10 @@ namespace GBS.IO
     {
         #region Fields
         private SerialPort _serialPort;
+        /// <summary>
+        /// Return serial port object.
+        /// </summary>
+        public SerialPort SerialPort { get { return this._serialPort; } }
         private SerialSettings _currentSerialSettings = new SerialSettings();
         private string _latestRecieved = String.Empty;
         public event EventHandler<SerialDataEventArgs> NewSerialDataRecieved;
@@ -75,8 +79,7 @@ namespace GBS.IO
             int dataLength = _serialPort.BytesToRead;
             byte[] data = new byte[dataLength];
             int nbrDataRead = _serialPort.Read(data, 0, dataLength);
-            if (nbrDataRead == 0)
-                return;
+            if (nbrDataRead == 0) return;
 
             // Send data to whom ever interested
             if (NewSerialDataRecieved != null)
@@ -146,6 +149,14 @@ namespace GBS.IO
         public void Write(string text)
         {
             _serialPort.Write(text);
+        }
+        /// <summary>
+        /// Write a line of text to port.
+        /// </summary>
+        /// <param name="text"></param>
+        public void WriteLine(string text)
+        {
+            _serialPort.WriteLine(text);
         }
         // Call to release serial port
         public void Dispose()

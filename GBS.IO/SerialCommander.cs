@@ -624,14 +624,15 @@ namespace GBS.IO
                 this.manager.Write("1");
                 Disconnect();
 
-                YModem ymodem = new YModem(manager.CurrentSerialSettings.PortName);
+                Thread.Sleep(2000);
+                YModem ymodem = new YModem(manager.SerialPort);//manager.CurrentSerialSettings.PortName);
                 ymodem.SendBinaryFile(fileName);
-                Thread.Sleep(8000);
 
+                Thread.Sleep(2000);
                 Connect();
                 this.manager.Write("2");
 
-                command.ResetState();
+                //command.ResetState();
                 return true;
             }
             catch (Exception ex)
@@ -639,6 +640,25 @@ namespace GBS.IO
                 Logger.Error(typeof(SerialCommander), ex);
                 SetMessage(ex.Message);
                 return false;
+            }
+        }
+        ////public bool Upgrade(string fileName)
+        ////{
+        ////    SendFile(fileName);
+        ////    return true;
+        ////}
+        /// <summary>
+        /// Sending a text file to com port.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void SendFile(string fileName)
+        {
+            using (System.IO.TextReader reader = System.IO.File.OpenText(fileName))
+            {
+                string line = string.Empty;
+                while((line = reader.ReadLine()) != null) {
+                    this.manager.Write(line);
+                }
             }
         }
         /// <summary>
