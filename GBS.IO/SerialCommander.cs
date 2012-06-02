@@ -285,6 +285,7 @@ namespace GBS.IO
             SetMessage("Connecting to COM...");
             try
             {
+                ClearOutput();
                 this.manager.StartListening();
             }
             catch (Exception ex)
