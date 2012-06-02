@@ -32,7 +32,7 @@ namespace SerialPortCommander
         {
             //save the last selected device mode into config file
             int index = 0;
-            string[] fileNames = new string[] { "current.serial", "current1.serial", "current2.serial" };
+            string[] fileNames = SerialCommander.GetDefaultCurrentFileNames();
             MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
             for (int i = 0; i < menus.Length; i++)
             {
@@ -54,17 +54,17 @@ namespace SerialPortCommander
             this.Title = Properties.Settings.Default.Company + " Studio" + " ver " + GetAssemblyVersion("SerialPortCommander.exe", 3);
             commander = new SerialCommander("BumbleBee");
             commander.LoadSetting(Properties.Settings.Default.Entry);
+            MainGrid.DataContext = commander;
 
             //check the selected mode based on file name loaded
             MenuItem[] menus = new MenuItem[3] { menuModem, menuPager, menuPTX };
             int index = 0;
-            string fileName = Properties.Settings.Default.Entry.TrimEnd(new char[] { '.', 's', 'e', 'r', 'i', 'a', 'l' });
-            fileName = fileName.TrimStart(new char[] { 'c', 'u', 'r', 'r', 'e', 'n', 't' });
-            if (fileName.Length > 0)
-                index = Convert.ToInt32(fileName);
+            string fileName = Properties.Settings.Default.Entry.TrimEnd(
+                System.IO.Path.GetExtension(SerialCommander.DEFAULT_FILENAME).ToCharArray());
+            fileName = fileName.TrimStart(
+                System.IO.Path.GetFileNameWithoutExtension(SerialCommander.DEFAULT_FILENAME).ToCharArray());
+            if (fileName.Length > 0) index = Convert.ToInt32(fileName);
             menus[index].IsChecked = true;
-
-            MainGrid.DataContext = commander;
         }
         public string GetAssemblyVersion(string assemblyName, int digit)
         {
@@ -175,7 +175,8 @@ namespace SerialPortCommander
         }
         private void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
-            string version = "Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            //string version = "Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string version = "version " + GetAssemblyVersion("SerialPortCommander.exe", 3);
             MessageBox.Show("GBS Embeded Solution" + "\n" + version);
         }
         private void ReportBugLink_RequestNavigate(object sender, RequestNavigateEventArgs e)

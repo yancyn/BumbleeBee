@@ -451,5 +451,16 @@ namespace GBS.IO.Test
                 target.Outputs.RemoveAt(i);
             }
         }
+
+        /// <summary>
+        /// A test for GetDefaultCurrentFileNames
+        /// </summary>
+        [TestMethod()]
+        public void GetDefaultCurrentFileNamesTest()
+        {
+            string[] expected = new string[] { "current.serial", "current1.serial", "current2.serial" };
+            string[] actual = SerialCommander.GetDefaultCurrentFileNames();
+            CollectionAssert.AreEqual(expected, actual);
+        }
     }
 }

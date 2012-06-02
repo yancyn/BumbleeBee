@@ -16,10 +16,13 @@ namespace GBS.IO
         /// <summary>
         /// Interval waiting time when message keep writing.
         /// </summary>
-        const int ONE_SECOND = 1000;
+        //const int ONE_SECOND = 1000;
         /// <summary>
         /// Interval waiting time when message keep retrieving.
         /// </summary>
+        /// <remarks>
+        /// This is required due to hardware enough time to response.
+        /// </remarks>
         const int ONE_MOMENT = 200;
         /// <summary>
         /// Indicate which scenario to looking into when signal receive back from serial port.
@@ -36,7 +39,7 @@ namespace GBS.IO
         /// <summary>
         /// current.serial - default configuration file to lookup at application directory.
         /// </summary>
-        protected const string DEFAULT_FILENAME = "current.serial";
+        public const string DEFAULT_FILENAME = "current.serial";
         private SerialCommand currentCommand;
 
         private int lineNo;
@@ -44,11 +47,16 @@ namespace GBS.IO
 
         private int startRetrieve;
         private int endRetrieve;
+
         /// <summary>
         /// Indicate the last processing index.
         /// This will be the next starting index again for retrieve.
         /// </summary>
         private int lastIndex;
+        /// <summary>
+        /// A counter for retrieving to a same com port connected.
+        /// </summary>
+        private int attempCounter;
         #endregion
 
         #region Properties
@@ -116,11 +124,11 @@ namespace GBS.IO
             string output = Encoding.ASCII.GetString(e.Data);
 
             this.lineNo++;
-            if (startRetrieve == 1) startIndex = lineNo;            
+            if (startRetrieve == 1) startIndex = lineNo;
 
             //retrieve scenario
             //if (output.Contains("REPLY"))
-                this.outputsField.Add(output);
+            this.outputsField.Add(output);
             //Match match = Regex.Match(output, @"REPLY\(\d{0,2}, \d{0,2}\): .*\r");
             //if (match.Success) this.outputsField.Add(output);
 
@@ -241,10 +249,11 @@ namespace GBS.IO
             this.startIndex = 0;
             this.startRetrieve = 0;
             this.endRetrieve = 0;
-            this.lastIndex = 0;
 
             this.isWriting = false;
             this.neverSuccess = true;
+            this.attempCounter = 0;
+            this.lastIndex = 0;
 
             this.nameField = string.Empty;
             this.firmwareField = string.Empty;
@@ -337,7 +346,8 @@ namespace GBS.IO
                         }
 
                         command.ResetState();
-                        Thread.Sleep(ONE_SECOND);//give hardware device a rest and process time
+                        //give hardware device a rest and process time
+                        Thread.Sleep(ONE_MOMENT);
                     }
                 }
             }
@@ -367,40 +377,40 @@ namespace GBS.IO
 
             totalFail = 0;
             //get version
-            if (this.firmwareField.Length == 0)
-            {
-                totalFail++;
-                SetMessage("Reading firmware...");
-                SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
-                command.GroupId = "05";
-                command.ParameterId = "02";
-                Read(command);
-                Thread.Sleep(ONE_MOMENT);
-            }
+            //if (this.firmwareField.Length == 0)
+            //{
+            //    totalFail++;
+            SetMessage("Reading firmware...");
+            SerialCommand command = new SerialCommand("Firmware Revision Number", ParameterType.String);
+            command.GroupId = "05";
+            command.ParameterId = "02";
+            Read(command);
+            Thread.Sleep(ONE_MOMENT);
+            //}
 
-            if (this.codeplugField.Length == 0)
-            {
-                totalFail++;
-                SetMessage("Reading codeplug...");
-                SerialCommand command = new SerialCommand("Codeplug Revision Number", ParameterType.String);
-                command.GroupId = "05";
-                command.ParameterId = "03";
-                Read(command);
-                Thread.Sleep(ONE_MOMENT);
-            }
+            //if (this.codeplugField.Length == 0)
+            //{
+            totalFail++;
+            SetMessage("Reading codeplug...");
+            SerialCommand command2 = new SerialCommand("Codeplug Revision Number", ParameterType.String);
+            command2.GroupId = "05";
+            command2.ParameterId = "03";
+            Read(command2);
+            Thread.Sleep(ONE_MOMENT);
+            //}
 
             //execute all commands
             foreach (ParameterGroup group in this.commandGroupsField)
             {
                 foreach (SerialCommand cmd in group.Commands)
                 {
-                    if (!cmd.Success)
-                    {
-                        SetMessage("Reading " + cmd.Name + "...");
-                        Read(cmd);
-                        Thread.Sleep(ONE_MOMENT);
-                        totalFail++;
-                    }
+                    //if (!cmd.Success)
+                    //{
+                    SetMessage("Reading " + cmd.Name + "...");
+                    Read(cmd);
+                    Thread.Sleep(ONE_MOMENT);
+                    totalFail++;
+                    //}
                 }
             }
             //}//end loop
@@ -409,6 +419,12 @@ namespace GBS.IO
             ProcessOutputsToLine();
             //ProcessOutputsCollection();//key: must process first before sending command to serial port
         }
+        /// <summary>
+        /// Process what we see in debug output.
+        /// </summary>
+        /// <remarks>
+        /// todo: refactor for better performance.
+        /// </remarks>
         private void ProcessOutputsToLine()
         {
             string cache = string.Empty;
@@ -419,23 +435,24 @@ namespace GBS.IO
             string[] lines = cache.Split(new char[] { '\r', '\n' });
             foreach (string line in lines)
             {
-                Match match = Regex.Match(line, @"REPLY\(\d{0,2}, \d{0,2}\): .*");
-                if (!match.Success) continue;
-
-                string[] hold = new string[3];
-                MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
-                if (matches.Count < 2) continue;
-
-                hold[0] = matches[0].Groups[0].Value;
-                hold[1] = matches[1].Groups[0].Value;
-                match = Regex.Match(line, @": .*");
+                Match match = Regex.Match(line, @"\+REPLY\(\d{0,2}, \d{0,2}\): .*");
                 if (match.Success)
                 {
-                    hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
-                    hold[2] = hold[2].Trim();
-                }
+                    string[] hold = new string[3];
+                    MatchCollection matches = Regex.Matches(match.Groups[0].Value, @"\d{2}");
+                    if (matches.Count < 2) continue;
 
-                LookupCommand(hold[0], hold[1], hold[2]);
+                    hold[0] = matches[0].Groups[0].Value;
+                    hold[1] = matches[1].Groups[0].Value;
+                    match = Regex.Match(line, @": .*");
+                    if (match.Success)
+                    {
+                        hold[2] = match.Groups[0].Value.Replace(":", string.Empty);
+                        hold[2] = hold[2].Trim();
+                    }
+
+                    LookupCommand(hold[0], hold[1], hold[2]);
+                }
             }
         }
         /// <summary>
@@ -456,7 +473,7 @@ namespace GBS.IO
                     this.outputsField.RemoveAt(i);
                     continue;
                 }
-                
+
                 string[] lines = output.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string line in lines)
                 {
@@ -890,6 +907,19 @@ namespace GBS.IO
                     }
                 }
             }
+        }
+        public static string[] GetDefaultCurrentFileNames()
+        {
+            string[] fileNames = new string[3];
+            fileNames[0] = DEFAULT_FILENAME;
+
+            //string prefix = DEFAULT_FILENAME.Substring(0, DEFAULT_FILENAME.IndexOf('.'));
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(DEFAULT_FILENAME);
+            string extension = System.IO.Path.GetExtension(DEFAULT_FILENAME);
+            for (int i = 1; i < fileNames.Length; i++)
+                fileNames[i] = fileName + i + extension;
+
+            return fileNames;
         }
         #endregion
     }
